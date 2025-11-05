@@ -16,7 +16,12 @@
 			"blue","green","red","yellow","violet",
 			"pink","brown", "leaded"
 		] },
-		{ "code": "wood", "states": ["aged"], "loadFromProperties": "wildcrafttree:block/wood" }
+		{ "code": "wood", "states": ["aged"], 
+			"loadFromPropertiesCombine": [
+			"game:block/wood",
+			"wildcrafttree:block/wood"
+    		]
+		}
 	],
 	"shape": { "base": "slidingwindows:block/glass/2x1" },
 	"attributes": {
