@@ -1,0 +1,14 @@
+{
+    "$schema": "https://moddbcdn.vintagestory.at/schema/modinfo.latest.json",
+    "type": "Code",
+    "modid": "slidingwindows",
+    "name": "Sliding Windows",
+    "authors": ["MissesHex"],
+    "description": "Adds sliding single hung windows, craftable from glass and planks.",
+    "version": "1.0.0",
+    "side": "Universal",
+    "dependencies": {
+        "game": "1.21.0",
+        "survival": "1.21.0"
+    }
+}

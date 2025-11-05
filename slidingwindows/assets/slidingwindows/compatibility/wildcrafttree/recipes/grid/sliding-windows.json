@@ -1,0 +1,18 @@
+[{
+  "ingredientPattern": "PGP,PPP,PGP",
+  "width": 3,
+	"height": 3,
+  "RecipeGroup": 0,
+  "ingredients": {
+    "G": [
+      { "type": "block", "code": "game:glass-*",  "name": "glass" },
+      { "type": "block", "code": "game:glasspane-leaded-*", "name": "wood" },
+      { "type": "block", "code": "wildcrafttree:glasspane-leaded-*", "name": "wood" }
+    ],
+    "P": [
+      { "type": "item",  "code": "game:plank-*", "name": "wood" },
+      { "type": "item",  "code": "wildcrafttree:plank-*", "name": "wood" }
+    ]
+  },
+  "output": { "type": "block", "code": "slidingwindows:sliding-window-wc-{glass}-{wood}", "quantity": 1 }
+}]

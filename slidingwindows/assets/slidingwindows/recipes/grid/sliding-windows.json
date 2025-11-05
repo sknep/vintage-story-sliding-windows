@@ -1,0 +1,14 @@
+[{
+  "ingredientPattern": "PGP,PPP,PGP",
+  "width": 3,
+	"height": 3,
+  "RecipeGroup": 0,
+  "ingredients": {
+    "G": [
+      { "type": "block", "code": "game:glass-*",  "name": "glass" },
+      { "type": "block", "code": "game:glasspane-leaded-*", "name": "wood" }
+    ],
+    "P": { "type": "item",  "code": "game:plank-*", "name": "wood" }
+  },
+  "output": { "type": "block", "code": "slidingwindows:sliding-window-{glass}-{wood}", "quantity": 1 }
+}]
