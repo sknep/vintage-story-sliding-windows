@@ -23,5 +23,18 @@
   "slidingwindows:block-sliding-window-wc-pink-*":    "Pink single-hung glass window",
   "slidingwindows:block-sliding-window-wc-brown-*":   "Brown single-hung glass window",
   "slidingwindows:block-sliding-window-wc-leaded-*":  "Leaded single-hung glass window",
-  "slidingwindows:handbook-sliding-window-desc": "Craft 2x1 single-hung glass windows from glass blocks and wood planks. The bottom sash moves up and down."
+  "slidingwindows:handbook-sliding-window-desc": "Craft 2x1 single-hung glass windows from glass blocks and wood planks. The bottom sash moves up and down.",
+
+  "slidingwindows:block-sliding-door-plain-*":   "Plain sliding glass door",
+  "slidingwindows:block-sliding-door-smoky-*":   "Smoky sliding glass door",
+  "slidingwindows:block-sliding-door-quartz-*":  "Quartz sliding glass door",
+  "slidingwindows:block-sliding-door-vintage-*": "Vintage sliding glass door",
+  "slidingwindows:block-sliding-door-blue-*":    "Blue sliding glass door",
+  "slidingwindows:block-sliding-door-green-*":   "Green sliding glass door",
+  "slidingwindows:block-sliding-door-red-*":     "Red sliding glass door",
+  "slidingwindows:block-sliding-door-yellow-*":  "Yellow sliding glass door",
+  "slidingwindows:block-sliding-door-violet-*":  "Violet sliding glass door",
+  "slidingwindows:block-sliding-door-pink-*":    "Pink sliding glass door",
+  "slidingwindows:block-sliding-door-brown-*":   "Brown sliding glass door",
+  "slidingwindows:block-sliding-door-leaded-*":  "Leaded sliding glass door"
 }

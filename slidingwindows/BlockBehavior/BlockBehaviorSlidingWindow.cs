@@ -270,16 +270,15 @@ namespace SlidingWindows.BlockBehaviors
             {
                 for (int dy = 0; dy < height; dy++)
                 {
-                    for (int dz = 0; dz < width; dz++)
-                    {
-                        var offset = BEBehaviorSlidingWindow.getAdjacentOffset(dx, dz, dy, yRotRad);
-                        tmpPos.Set(pos.X + offset.X, pos.Y + offset.Y, pos.Z + offset.Z);
+                    // Door/window is only 1 block thick: back = 0
+                    var offset = BEBehaviorSlidingWindow.getAdjacentOffset(dx, 0, dy, yRotRad);
+                    tmpPos.Set(pos.X + offset.X, pos.Y + offset.Y, pos.Z + offset.Z);
 
-                        if (!onBlock(tmpPos)) return;
-                    }
+                    if (!onBlock(tmpPos)) return;
                 }
             }
         }
+
         
         // simpler, maybe? might only work for 2x1
         // public void IterateOverEach(BlockPos pos, ActionConsumable<BlockPos> onBlock)

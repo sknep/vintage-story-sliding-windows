@@ -51,7 +51,6 @@ namespace SlidingWindows.BlockEntityBehaviors
         }
         internal void SetupMeshAndBoxes()
         {
-
             if (Api.Side == EnumAppSide.Client)
             {
                 if (windowBh.animatableOrigMesh == null)
@@ -73,27 +72,29 @@ namespace SlidingWindows.BlockEntityBehaviors
             UpdateHitBoxes();
         }
 
+
         protected virtual void UpdateMeshAndAnimations()
         {
+            // Base mesh for static tesselation
             mesh = windowBh.animatableOrigMesh.Clone();
 
-            if (RotateYRad != 0)
+            float rot = RotateYRad;  // we don't have invertHandles, so no sign flip
+
+            if (rot != 0f)
             {
-                mesh = mesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 0, RotateYRad, 0);
-                // this line seems related to doors auto rotating? saving just in case
-                // animUtil.renderer.rotationDeg.Y = RotateYRad * GameMath.RAD2DEG;
+                // Rotate the static mesh around the block center
+                mesh = mesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 0, rot, 0);
             }
-            
+
+            // Make sure the animator uses the same rotation so the "opened" animation
+            // slides along the block's local X, regardless of world facing
             if (Api.Side == EnumAppSide.Client && animUtil?.renderer != null)
             {
-                var capi = (ICoreClientAPI)Api;
-                // Dispose the previous uploaded mesh to prevent memory leaks
-                animUtil.renderer.mtmeshref?.Dispose();
-
-                // Upload the updated mesh to the GPU
-                animUtil.renderer.mtmeshref = capi.Render.UploadMultiTextureMesh(mesh);
+                animUtil.renderer.rotationDeg.Y = rot * GameMath.RAD2DEG;
             }
+
         }
+
 
         protected virtual void UpdateHitBoxes()
         {
@@ -202,14 +203,14 @@ namespace SlidingWindows.BlockEntityBehaviors
             {
                 animUtil.StartAnimation(new AnimationMetaData() { Animation = "opened", Code = "opened", EaseInSpeed = easeInSpeed, EaseOutSpeed = easeOutSpeed });
             }
-            // Rebuild hitboxes for new state
-            UpdateHitBoxes();
+            // Prob don't need to Rebuild hitboxes for new state
+            // UpdateHitBoxes();
 
             // make mesh update with the new state
-            if (Api?.Side == EnumAppSide.Client)
-            {
-                UpdateMeshAndAnimations();
-            }
+            // if (Api?.Side == EnumAppSide.Client)
+            // {
+            //     UpdateMeshAndAnimations();
+            // }
 
             // Push the change to client+server
             Api?.World?.BlockAccessor.MarkBlockDirty(Pos);
@@ -238,6 +239,11 @@ namespace SlidingWindows.BlockEntityBehaviors
             if (opened != beforeOpened && animUtil != null) ToggleWindowSash(opened);
             if (Api != null && Api.Side is EnumAppSide.Client)
             {
+                if (animUtil?.renderer != null)
+                {
+                    animUtil.renderer.rotationDeg.Y = RotateYRad * GameMath.RAD2DEG;
+                }
+
                 UpdateMeshAndAnimations();
                 if (opened && !beforeOpened && animUtil != null && !animUtil.activeAnimationsByAnimCode.ContainsKey("opened"))
                 {
