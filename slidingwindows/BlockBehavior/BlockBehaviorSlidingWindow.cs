@@ -69,6 +69,17 @@ namespace SlidingWindows.BlockBehaviors
         public int height;
 
         /// <summary>
+        /// Should this sliding block try to auto-pair with neighbors?
+        /// </summary>
+        [DocumentAsJson("Optional", "false", true)]
+        public bool pairable;
+
+        /// <summary>
+        /// If true, this sliding element moves in the opposite direction of its paired neighbor.
+        /// </summary>
+        [DocumentAsJson("Optional", "true", true)]
+        public bool mirrorTrack;
+        /// <summary>
         /// Can this window be opened by hand?
         /// </summary>
         [DocumentAsJson("Optional", "True", true)]
@@ -90,6 +101,8 @@ namespace SlidingWindows.BlockBehaviors
             airtight = block.Attributes["airtight"].AsBool(true);
             width = block.Attributes["width"].AsInt(1);
             height = block.Attributes["height"].AsInt(1);
+            pairable = block.Attributes["pairable"].AsBool(false);
+            mirrorTrack = block.Attributes["mirrorTrack"].AsBool(false);
             handopenable = block.Attributes["handopenable"].AsBool(true);
         }
 

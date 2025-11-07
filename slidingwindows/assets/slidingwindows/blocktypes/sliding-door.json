@@ -29,6 +29,7 @@
 		"openingSpeed": 8,
 		"width": 2,
 		"height": 2,
+		"pairable": true,
 		"openSound": "game:sounds/wearable/scale1",
 		"closeSound": "game:sounds/wearable/scale1",
 		"secondarySounds": {
