@@ -8,64 +8,72 @@ using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using SlidingWindows.BlockBehaviors;
 using Vintagestory.GameContent;
+
 #nullable disable
 
 namespace SlidingWindows.BlockEntityBehaviors
 {
+    /// <summary>
+    /// Block entity behavior for sliding windows, structurally aligned with vanilla BEBehaviorDoor
+    /// but using sliding animation instead of swing.
+    /// </summary>
     public class BEBehaviorSlidingWindow : BEBehaviorAnimatable, IInteractable, IRotatable
     {
         public float RotateYRad;
+
         protected bool opened;
+        protected bool invertHandles;
         protected MeshData mesh;
+
+        // Open/closed collision + selection boxes for this controller.
+        // For sliding windows we treat Block.CollisionBoxes (from the shape file)
+        // as [frame, sashClosed, sashOpen] and build two explicit box sets
+        // instead of rotating shapes like vanilla does, because our shapes are more complex.
         protected Cuboidf[] boxesClosed, boxesOpened;
+
         public BlockFacing windowFacing { get { return BlockFacing.HorizontalFromYaw(RotateYRad); } }
+
         public BlockBehaviorSlidingWindow windowBh;
+
         public Cuboidf[] ColSelBoxes => opened ? boxesOpened : boxesClosed;
         public bool Opened => opened;
-        protected bool pairable;
+        public bool InvertHandles => invertHandles;
 
-        protected bool mirrorTrack;
         protected Vec3i leftWindowOffset;
         protected Vec3i rightWindowOffset;
 
         public BEBehaviorSlidingWindow LeftWindow
         {
-            get {
+            get
+            {
                 if (leftWindowOffset == null) return null;
                 var be = BlockBehaviorSlidingWindow.getSlidingWindowAt(Api.World, Pos.AddCopy(leftWindowOffset));
                 if (be == null) leftWindowOffset = null;
                 return be;
             }
-            set {
+            protected set
+            {
                 leftWindowOffset = value == null ? null : value.Pos.SubCopy(Pos).ToVec3i();
             }
         }
 
         public BEBehaviorSlidingWindow RightWindow
         {
-            get {
+            get
+            {
                 if (rightWindowOffset == null) return null;
                 var be = BlockBehaviorSlidingWindow.getSlidingWindowAt(Api.World, Pos.AddCopy(rightWindowOffset));
                 if (be == null) rightWindowOffset = null;
                 return be;
             }
-            set {
+            protected set
+            {
                 rightWindowOffset = value == null ? null : value.Pos.SubCopy(Pos).ToVec3i();
             }
         }
 
-        public static Vec3i getAdjacentOffset(int right, int back, int up, float rotateYRad)
-        {
-            return new Vec3i(
-                right * (int)Math.Round(Math.Sin(rotateYRad + GameMath.PIHALF)) - back * (int)Math.Round(Math.Sin(rotateYRad)),
-                up,
-                right * (int)Math.Round(Math.Cos(rotateYRad + GameMath.PIHALF)) - back * (int)Math.Round(Math.Cos(rotateYRad))
-            );
-        }
         public BEBehaviorSlidingWindow(BlockEntity blockentity) : base(blockentity)
         {
-            boxesClosed = Block.CollisionBoxes;
-
             windowBh = Block.GetBehavior<BlockBehaviorSlidingWindow>();
         }
 
@@ -73,18 +81,126 @@ namespace SlidingWindows.BlockEntityBehaviors
         {
             base.Initialize(api, properties);
 
-            pairable = Block.Attributes?["pairable"].AsBool(false) ?? false;
-            mirrorTrack = Block.Attributes?["mirrorTrack"].AsBool(false) ?? false;
-
-            SetupMeshAndBoxes();
+            SetupMeshAndBoxes(false);
 
             if (opened && animUtil != null && !animUtil.activeAnimationsByAnimCode.ContainsKey("opened"))
             {
                 ToggleWindowSash(true);
             }
         }
-        internal void SetupMeshAndBoxes()
+
+        #region Adjacency helpers (ported from vanilla door)
+
+        public Vec3i getAdjacentOffset(int right, int back = 0, int up = 0)
         {
+            return getAdjacentOffset(right, back, up, RotateYRad, invertHandles);
+        }
+
+        public static Vec3i getAdjacentOffset(int right, int back, int up, float rotateYRad, bool invertHandles)
+        {
+            if (invertHandles) right = -right;
+            return new Vec3i(
+                right * (int)Math.Round(Math.Sin(rotateYRad + GameMath.PIHALF)) - back * (int)Math.Round(Math.Sin(rotateYRad)),
+                up,
+                right * (int)Math.Round(Math.Cos(rotateYRad + GameMath.PIHALF)) - back * (int)Math.Round(Math.Cos(rotateYRad))
+            );
+        }
+
+        #endregion
+
+        internal void SetupMeshAndBoxes(bool initialSetup)
+        {
+            if (LeftWindow == this || RightWindow == this) return;
+
+            // Early out if we know this window is ace
+            if (initialSetup && windowBh.pairable)
+            {
+                if (BlockBehaviorSlidingWindow.HasCombinableLeftWindow(Api.World, RotateYRad, Pos, windowBh.width, out BEBehaviorSlidingWindow otherWindow, out int offset))
+                {
+                    if (otherWindow.LeftWindow == null && otherWindow.RightWindow == null && otherWindow.windowFacing == windowFacing)
+                    {
+                        if (otherWindow.invertHandles)
+                        {
+                            if (otherWindow.windowBh.width > 1)
+                            {
+                                Api.World.BlockAccessor.SetBlock(0, otherWindow.Pos);
+                                BlockPos leftWindowPos = Pos.AddCopy(windowFacing.GetCW(), (otherWindow.windowBh.width + windowBh.width - 1));
+                                Api.World.BlockAccessor.SetBlock(otherWindow.Block.Id, leftWindowPos);
+                                otherWindow = Block.GetBEBehavior<BEBehaviorSlidingWindow>(leftWindowPos);
+                                otherWindow.RotateYRad = RotateYRad;
+                                otherWindow.windowBh.placeMultiblockParts(Api.World, leftWindowPos);
+                                LeftWindow = otherWindow;
+                                LeftWindow.RightWindow = this;
+                                LeftWindow.SetupMeshAndBoxes(true);
+                            }
+                            else
+                            {
+                                otherWindow.invertHandles = false;
+                                LeftWindow = otherWindow;
+                                LeftWindow.RightWindow = this;
+                                LeftWindow.Blockentity.MarkDirty(true);
+                                LeftWindow.SetupMeshAndBoxes(false);
+                            }
+                        }
+                        else
+                        {
+                            LeftWindow = otherWindow;
+                            LeftWindow.RightWindow = this;
+                        }
+
+                        invertHandles = true;
+                        Blockentity.MarkDirty(true);
+                    }
+                }
+
+                if (BlockBehaviorSlidingWindow.HasCombinableRightWindow(Api.World, RotateYRad, Pos, windowBh.width, out otherWindow, out offset))
+                {
+                    if (otherWindow.LeftWindow == null && otherWindow.RightWindow == null && otherWindow.windowFacing == windowFacing)
+                    {
+                        if (Api.Side == EnumAppSide.Server)
+                        {
+                            if (!otherWindow.invertHandles)
+                            {
+                                if (otherWindow.windowBh.width > 1)
+                                {
+                                    Api.World.BlockAccessor.SetBlock(0, otherWindow.Pos);
+                                    BlockPos rightWindowPos = Pos.AddCopy(windowFacing.GetCCW(), (otherWindow.windowBh.width + windowBh.width - 1));
+                                    Api.World.BlockAccessor.SetBlock(otherWindow.Block.Id, rightWindowPos);
+                                    otherWindow = Block.GetBEBehavior<BEBehaviorSlidingWindow>(rightWindowPos);
+                                    otherWindow.RotateYRad = RotateYRad;
+                                    otherWindow.invertHandles = true;
+                                    otherWindow.windowBh.placeMultiblockParts(Api.World, rightWindowPos);
+                                    RightWindow = otherWindow;
+                                    RightWindow.LeftWindow = this;
+                                    otherWindow.SetupMeshAndBoxes(true);
+                                }
+                                else
+                                {
+                                    otherWindow.invertHandles = true;
+                                    RightWindow = otherWindow;
+                                    RightWindow.LeftWindow = this;
+                                    RightWindow.Blockentity.MarkDirty(true);
+                                    RightWindow.SetupMeshAndBoxes(false);
+                                }
+                            }
+                            else
+                            {
+                                RightWindow = otherWindow;
+                                RightWindow.LeftWindow = this;
+                            }
+                        }
+                    }
+                }
+            }
+            else if (!windowBh.pairable && initialSetup)
+            {
+                // get over being dumped by the other window
+                LeftWindow = null;
+                RightWindow = null;
+                invertHandles = false;
+                Blockentity.MarkDirty(true);
+            }
+
             if (Api.Side == EnumAppSide.Client)
             {
                 if (windowBh.animatableOrigMesh == null)
@@ -106,30 +222,21 @@ namespace SlidingWindows.BlockEntityBehaviors
             UpdateHitBoxes();
         }
 
-
         protected virtual void UpdateMeshAndAnimations()
         {
-            // Base mesh for static tesselation
             mesh = windowBh.animatableOrigMesh.Clone();
-           
+
             float rot = RotateYRad;
-            // Vanilla doors: use a sign-flipped rotation angle when mirrored so the
-            // animation "faces" the right way. Do the same for our sliding window.
-            if (mirrorTrack)
-            {
-                rot = -rot;
-            }
+
+            if (invertHandles) rot = -rot;
 
             if (rot != 0f)
             {
-                // Rotate the static mesh around the block center
                 mesh = mesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 0, rot, 0);
             }
 
-            // Mirror in local X (left/right) around block center, just like vanilla doors
-            if (mirrorTrack)
+            if (invertHandles)
             {
-                // We need a full matrix transform for this to update normals as well
                 Matrixf matf = new Matrixf();
                 matf.Translate(0.5f, 0.5f, 0.5f)
                     .Scale(-1f, 1f, 1f)
@@ -152,148 +259,91 @@ namespace SlidingWindows.BlockEntityBehaviors
                 }
             }
 
-
-            // Make sure the animator uses the same rotation so the "opened" animation
-            // slides along the block's local X, regardless of world facing
+            // Make animator follow the same yaw so the "opened" animation always slides
+            // along the local X axis, regardless of world orientation.
             if (Api.Side == EnumAppSide.Client && animUtil?.renderer != null)
             {
                 animUtil.renderer.rotationDeg.Y = rot * GameMath.RAD2DEG;
             }
-
         }
-                
-        private Cuboidf MirrorBoxX(Cuboidf box)
-        {
-            // Mirror across X = 0.5 (block center), keeping Y/Z the same
-            return new Cuboidf(
-                1f - box.X2, box.Y1, box.Z1,
-                1f - box.X1, box.Y2, box.Z2
-            );
-        }
-
-
         protected virtual void UpdateHitBoxes()
         {
+            // Expecting Block.CollisionBoxes to contain:
+            // [0] = stationary frame
+            // [1] = moving sash (closed)
+            // [2] = moving sash (open)
             var all = Block.CollisionBoxes ?? Array.Empty<Cuboidf>();
 
-            // Expecting the collisionboxes array to have three items:
-            //   0 = stationary sash
-            //   1 = moving sash (closed)
-            //   2 = moving sash (open)
-            // but be defensive in case JSON is missing something.
-            Cuboidf stationary = all.Length > 0 ? all[0].Clone() : new Cuboidf(0, 0, 0, 0, 0, 0);
+            Cuboidf stationary   = all.Length > 0 ? all[0].Clone() : new Cuboidf(0, 0, 0, 0, 0, 0);
             Cuboidf movingClosed = all.Length > 1 ? all[1].Clone() : stationary.Clone();
-            Cuboidf movingOpen = all.Length > 2 ? all[2].Clone() : movingClosed.Clone();
+            Cuboidf movingOpen   = all.Length > 2 ? all[2].Clone() : movingClosed.Clone();
 
-            // Closed: stationary + moving in closed position
-            boxesClosed = new[] { stationary, movingClosed };
+            var localClosed = new[] { stationary.Clone(), movingClosed.Clone() };
+            var localOpened = new[] { stationary.Clone(), movingOpen.Clone() };
 
-            // Open: stationary + moving in open position
-            boxesOpened = new[] { stationary, movingOpen };
+            // X center stays at the controller block center (0.5) so the mesh and boxes
+            // always pivot around the controller column. This expects the JSON shapes
+            // and collision to also start from the controller block as origin.
+            float mirrorCenterX = 0.5f;
 
-
-            // Use the same signed rotation as the mesh
-            float rot = RotateYRad;
-            if (mirrorTrack)
+            if (invertHandles)
             {
-                rot = -rot;
+                MirrorAroundCenterX(localClosed, mirrorCenterX);
+                MirrorAroundCenterX(localOpened, mirrorCenterX);
             }
 
-            if (rot != 0f)
+            // For yaw rotation, only X/Z of the origin matter. We keep X=0.5 so
+            // the shape stays anchored on the controller column. Y is set to the
+            // vertical center for symmetry; it does not affect yaw.
+            double centerX = 0.5;
+            double centerY = (windowBh?.height > 0 ? windowBh.height : 1) / 2.0;
+
+            var origin = new Vec3d(centerX, centerY, 0.5);
+            float degY = RotateYRad * GameMath.RAD2DEG;
+
+            boxesClosed = new Cuboidf[localClosed.Length];
+            boxesOpened = new Cuboidf[localOpened.Length];
+
+            for (int i = 0; i < localClosed.Length; i++)
             {
-                float degY = rot * GameMath.RAD2DEG;
-                var origin = new Vec3d(0.5, 0.5, 0.5);
-
-                for (int i = 0; i < boxesClosed.Length; i++)
-                {
-                    boxesClosed[i] = boxesClosed[i].RotatedCopy(0, degY, 0, origin);
-                }
-
-                for (int i = 0; i < boxesOpened.Length; i++)
-                {
-                    boxesOpened[i] = boxesOpened[i].RotatedCopy(0, degY, 0, origin);
-                }
+                boxesClosed[i] = localClosed[i].RotatedCopy(0, degY, 0, origin);
+                boxesOpened[i] = localOpened[i].RotatedCopy(0, degY, 0, origin);
             }
 
-            // Now mirror hitboxes in local X if this leaf is mirrored
-            if (mirrorTrack)
-            {
-                for (int i = 0; i < boxesClosed.Length; i++)
-                {
-                    boxesClosed[i] = MirrorBoxX(boxesClosed[i]);
-                }
-                for (int i = 0; i < boxesOpened.Length; i++)
-                {
-                    boxesOpened[i] = MirrorBoxX(boxesOpened[i]);
-                }
-            }
-
+            // - Vanilla implicitly stacks its 1×2 column per block; we do not.
+            // - Instead, JSON collisionboxes already describe the full multi-block
+            //   footprint (0..2 in the case of a height=2 block), and here we only
+            //   mirror + rotate that union into world space.
         }
 
-       void TryPairWithNeighbor()
+        private static void MirrorAroundCenterX(Cuboidf[] boxes, float centerX)
         {
-            if (!pairable) return;
-            if (LeftWindow != null || RightWindow != null) return;
-
-            int width = windowBh?.width ?? 1;   // defined in your block behavior JSON/attrs
-            foreach (int dir in new int[] { 1, -1 })
+            for (int i = 0; i < boxes.Length; i++)
             {
-                
-                Vec3i offset = getAdjacentOffset(dir * width, 0, 0, RotateYRad);
-                BlockPos npos = Pos.AddCopy(offset.X, offset.Y, offset.Z);
+                var b = boxes[i];
+                float x1 = b.X1;
+                float x2 = b.X2;
 
-                var nBeh = BlockBehaviorSlidingWindow.getSlidingWindowAt(Api.World, npos);
-                if (nBeh == null) continue;
-                if (!nBeh.pairable) continue;
-                if (nBeh.LeftWindow != null || nBeh.RightWindow != null) continue;
-                if (nBeh.windowFacing != this.windowFacing) continue;
+                b.X1 = 2f * centerX - x2;
+                b.X2 = 2f * centerX - x1;
 
-                if (dir == 1)
-                {
-                    // Neighbor is to our right -> we are left leaf, neighbor is right leaf
-                    RightWindow = nBeh;
-                    nBeh.LeftWindow = this;
-
-                    mirrorTrack = false;
-                    nBeh.mirrorTrack = true;
-                }
-                else
-                {
-                    // Neighbor is to our left -> we are right leaf, neighbor is left leaf
-                    LeftWindow = nBeh;
-                    nBeh.RightWindow = this;
-
-                    mirrorTrack = true;
-                    nBeh.mirrorTrack = false;
-                }
-
-                // Rebuild both now that pairing + mirroring is known
-                SetupMeshAndBoxes();
-                nBeh.SetupMeshAndBoxes();
-
-                Blockentity.MarkDirty();
-                nBeh.Blockentity.MarkDirty();
-                break;
+                boxes[i] = b;
             }
         }
-
 
         public virtual void OnBlockPlaced(ItemStack byItemStack, IPlayer byPlayer, BlockSelection blockSel)
         {
             if (byItemStack == null) return; // Placed by worldgen
 
             RotateYRad = getRotateYRad(byPlayer, blockSel);
-            pairable = Block.Attributes?["pairable"].AsBool(false) ?? false;
-
-            SetupMeshAndBoxes();
-            TryPairWithNeighbor();
+            SetupMeshAndBoxes(true);
         }
 
         public static float getRotateYRad(IPlayer byPlayer, BlockSelection blockSel)
         {
             BlockPos targetPos = blockSel.DidOffset ? blockSel.Position.AddCopy(blockSel.Face.Opposite) : blockSel.Position;
             double dx = byPlayer.Entity.Pos.X - (targetPos.X + blockSel.HitPosition.X);
-            double dz = (float)byPlayer.Entity.Pos.Z - (targetPos.Z + blockSel.HitPosition.Z);
+            double dz = byPlayer.Entity.Pos.Z - (targetPos.Z + blockSel.HitPosition.Z);
             float angleHor = (float)Math.Atan2(dx, dz);
 
             float deg90 = GameMath.PIHALF;
@@ -302,8 +352,11 @@ namespace SlidingWindows.BlockEntityBehaviors
 
         public bool IsSideSolid(BlockFacing facing)
         {
-            return facing == windowFacing;
+            // Facing never changes, just make sure that face isn't open
+            return !opened && facing == windowFacing;
         }
+
+        #region IInteractable
 
         public bool OnBlockInteractStart(IWorldAccessor world, IPlayer byPlayer, BlockSelection blockSel, ref EnumHandling handling)
         {
@@ -318,20 +371,23 @@ namespace SlidingWindows.BlockEntityBehaviors
             return true;
         }
 
+        #endregion
+
         internal void ToggleWindowSashFromPartner(bool opened)
         {
-            // Just do the visual + collision change, no sounds
+            // Just do visuals + hitboxes, no sound. Mirrors vanilla "sync the other leaf".
             this.opened = opened;
             ToggleWindowSash(opened);
+            // Vanilla also updates neighbors; we stick to MarkBlockDirty in ToggleWindowSash.
         }
 
         public void ToggleWindowSashState(IPlayer byPlayer, bool opened)
         {
             this.opened = opened;
             ToggleWindowSash(opened);
-                    
+
             // Sync state to paired neighbors (no extra sounds)
-            if (LeftWindow != null)
+            if (LeftWindow != null && invertHandles)
             {
                 LeftWindow.ToggleWindowSashFromPartner(opened);
             }
@@ -343,44 +399,45 @@ namespace SlidingWindows.BlockEntityBehaviors
             float pitch = opened ? 0.8f : 0.7f;
 
             var sound = opened ? windowBh?.OpenSound : windowBh?.CloseSound;
+
+
+            // We use some extra sounds from "secondarySounds" attributes on top.
             var customSoundKey = Block.Attributes?["secondarySounds"]?[opened ? "open" : "close"]?.AsString(null);
             if (customSoundKey != null)
             {
                 var customSound = new AssetLocation(customSoundKey);
                 float customSoundPitch = opened ? 0.8f : 1f;
                 Api.World.PlaySoundAt(customSound, Pos.X + 0.5f, Pos.InternalY + 0.5f, Pos.Z + 0.5f, byPlayer, EnumSoundType.Sound, customSoundPitch, 32f, 2f);
-
             }
+
             Api.World.PlaySoundAt(sound, Pos.X + 0.5f, Pos.InternalY + 0.5f, Pos.Z + 0.5f, byPlayer, EnumSoundType.Sound, pitch, 32f, 1f);
         }
 
-        // updates movement and hitboxes, but no sound, because this is also done in initialize()
+        // Updates movement and hitboxes, but no sounds
         private void ToggleWindowSash(bool opened)
         {
             float easeInSpeed = Block.Attributes?["openingSpeed"].AsFloat(10) ?? 10;
-            float easeOutSpeed =Block.Attributes?["closingSpeed"].AsFloat(10) ?? 10;
+            float easeOutSpeed = Block.Attributes?["closingSpeed"].AsFloat(10) ?? 10;
+
             this.opened = opened;
+
             if (!opened)
             {
                 animUtil.StopAnimation("opened");
             }
             else
             {
-                animUtil.StartAnimation(new AnimationMetaData() { Animation = "opened", Code = "opened", EaseInSpeed = easeInSpeed, EaseOutSpeed = easeOutSpeed });
-            }
-            // Rebuild hitboxes for new state
-            UpdateHitBoxes();
-
-            // make mesh update with the new state
-            if (Api?.Side == EnumAppSide.Client)
-            {
-                UpdateMeshAndAnimations();
+                animUtil.StartAnimation(new AnimationMetaData()
+                {
+                    Animation = "opened",
+                    Code = "opened",
+                    EaseInSpeed = easeInSpeed,
+                    EaseOutSpeed = easeOutSpeed
+                });
             }
 
-            // Push the change to client+server, and recache related blocks' selection/collision
             Api?.World?.BlockAccessor.MarkBlockDirty(Pos);
             Blockentity.MarkDirty();
-            Api?.World?.BlockAccessor.ExchangeBlock(Block.Id, Pos);
         }
 
         public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
@@ -401,9 +458,12 @@ namespace SlidingWindows.BlockEntityBehaviors
 
             RotateYRad = tree.GetFloat("rotateYRad");
             opened = tree.GetBool("opened");
-            mirrorTrack = tree.GetBool("mirrorTrack");
+            invertHandles = tree.GetBool("invertHandles");
+            leftWindowOffset = tree.GetVec3i("leftWindowPos");
+            rightWindowOffset = tree.GetVec3i("rightWindowPos");
 
             if (opened != beforeOpened && animUtil != null) ToggleWindowSash(opened);
+
             if (Api != null && Api.Side is EnumAppSide.Client)
             {
                 if (animUtil?.renderer != null)
@@ -412,20 +472,25 @@ namespace SlidingWindows.BlockEntityBehaviors
                 }
 
                 UpdateMeshAndAnimations();
+
                 if (opened && !beforeOpened && animUtil != null && !animUtil.activeAnimationsByAnimCode.ContainsKey("opened"))
                 {
                     ToggleWindowSash(true);
                 }
+
                 UpdateHitBoxes();
                 Api.World.BlockAccessor.MarkBlockDirty(Pos);
             }
         }
+
         public override void ToTreeAttributes(ITreeAttribute tree)
         {
             base.ToTreeAttributes(tree);
             tree.SetFloat("rotateYRad", RotateYRad);
             tree.SetBool("opened", opened);
-            tree.SetBool("mirrorTrack", mirrorTrack);
+            tree.SetBool("invertHandles", invertHandles);
+            if (leftWindowOffset != null) tree.SetVec3i("leftWindowPos", leftWindowOffset);
+            if (rightWindowOffset != null) tree.SetVec3i("rightWindowPos", rightWindowOffset);
         }
 
         public override void GetBlockInfo(IPlayer forPlayer, StringBuilder dsc)
