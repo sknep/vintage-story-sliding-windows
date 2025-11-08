@@ -1,0 +1,73 @@
+{
+    "code": "fixed-1x1",
+	"class": "BlockGeneric",
+	"entityClass": "Generic",
+    "behaviors": [ 
+		{ "name": "SlidingWindow" }
+	], 
+	"entityBehaviors": [
+		{ "name": "SlidingWindowBE" }
+	],
+	"variantgroups": [
+        { "code": "glass", "states": [
+			"plain","smoky","quartz","vintage",
+			"blue","green","red","yellow","violet",
+			"pink","brown", "leaded"
+		] },
+		{ "code": "wood", "states": ["aged"], "loadFromProperties": "game:block/wood" }
+	],
+    "shape": { "base": "slidingwindows:block/fixed/1x1" },
+    "collisionboxes": [
+        { "x1": 0.0, "y1": 0.0, "z1": 0.4, "x2": 1.0, "y2": 1.0, "z2": 0.6 }
+    ],
+
+	"attributes": {
+		"reinforcable": true,
+		"handbook": {
+			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-fixed-desc" }]
+		},
+        "airtight": { "*": true },
+		"glass": "{glass}",
+        "closingSpeed": 0,
+		"openingSpeed": 0,
+		"width": 1,
+		"height": 1,
+        "handopenable": false
+	},
+	"creativeinventory": {
+		"general": ["*"],
+		"construction": ["*"]
+	},
+    "textures": {
+        "glass": {
+			 "base": "game:block/glass/{glass}"
+		},
+		"wood":  { 
+			"base": "game:block/wood/debarked/{wood}",
+				"blendedOverlays": [{ "base": "slidingwindows:block/2x1-overlay", "blendMode": "Overlay" }] 
+		},
+		"putty": { "base": "game:block/glass/frame" }
+
+    },
+	"drawtype": "json",
+	"renderPass": "OpaqueNoCull",
+	"faceCullMode": "NeverCull",
+	"blockmaterial": "Glass",
+	"sideAo": { "all": false },
+	"heldTpIdleAnimation": "holdunderarm",
+	"replaceable": 100,
+	"resistance": 1,
+	"lightAbsorption": 0.3,
+	"sidesolid": {
+		"all": false
+	},
+	"sideopaque": {
+		"all": false
+	},
+	"sounds": {
+		"place": "game:block/planks",
+		"hit": "game:block/glass",
+		"break": "game:block/glass"
+	},
+	"materialDensity": 200
+}

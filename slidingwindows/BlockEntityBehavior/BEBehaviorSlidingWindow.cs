@@ -115,33 +115,36 @@ namespace SlidingWindows.BlockEntityBehaviors
                 {
                     if (otherWindow.LeftWindow == null && otherWindow.RightWindow == null && otherWindow.windowFacing == windowFacing)
                     {
-                        if (otherWindow.invertHandles)
+                        if (Api.Side == EnumAppSide.Server)
                         {
-                            if (otherWindow.windowBh.width > 1)
+                            if (otherWindow.invertHandles)
                             {
-                                Api.World.BlockAccessor.SetBlock(0, otherWindow.Pos);
-                                BlockPos leftWindowPos = Pos.AddCopy(windowFacing.GetCW(), (otherWindow.windowBh.width + windowBh.width - 1));
-                                Api.World.BlockAccessor.SetBlock(otherWindow.Block.Id, leftWindowPos);
-                                otherWindow = Block.GetBEBehavior<BEBehaviorSlidingWindow>(leftWindowPos);
-                                otherWindow.RotateYRad = RotateYRad;
-                                otherWindow.windowBh.placeMultiblockParts(Api.World, leftWindowPos);
-                                LeftWindow = otherWindow;
-                                LeftWindow.RightWindow = this;
-                                LeftWindow.SetupMeshAndBoxes(true);
+                                if (otherWindow.windowBh.width > 1)
+                                {
+                                    Api.World.BlockAccessor.SetBlock(0, otherWindow.Pos);
+                                    BlockPos leftWindowPos = Pos.AddCopy(windowFacing.GetCW(), (otherWindow.windowBh.width + windowBh.width - 1));
+                                    Api.World.BlockAccessor.SetBlock(otherWindow.Block.Id, leftWindowPos);
+                                    otherWindow = Block.GetBEBehavior<BEBehaviorSlidingWindow>(leftWindowPos);
+                                    otherWindow.RotateYRad = RotateYRad;
+                                    otherWindow.windowBh.placeMultiblockParts(Api.World, leftWindowPos);
+                                    LeftWindow = otherWindow;
+                                    LeftWindow.RightWindow = this;
+                                    LeftWindow.SetupMeshAndBoxes(true);
+                                }
+                                else
+                                {
+                                    otherWindow.invertHandles = false;
+                                    LeftWindow = otherWindow;
+                                    LeftWindow.RightWindow = this;
+                                    LeftWindow.Blockentity.MarkDirty(true);
+                                    LeftWindow.SetupMeshAndBoxes(false);
+                                }
                             }
                             else
                             {
-                                otherWindow.invertHandles = false;
                                 LeftWindow = otherWindow;
                                 LeftWindow.RightWindow = this;
-                                LeftWindow.Blockentity.MarkDirty(true);
-                                LeftWindow.SetupMeshAndBoxes(false);
                             }
-                        }
-                        else
-                        {
-                            LeftWindow = otherWindow;
-                            LeftWindow.RightWindow = this;
                         }
 
                         invertHandles = true;
@@ -379,7 +382,8 @@ namespace SlidingWindows.BlockEntityBehaviors
         public void ToggleWindowSashState(IPlayer byPlayer, bool opened, bool fromPartner = false)
         {
             // If we're already in that state, bail
-            if (this.opened == opened && animUtil != null && animUtil.activeAnimationsByAnimCode.ContainsKey("opened") == opened) return;
+            // if you want to be explicit about the 'opened' animation: (animUtil.activeAnimationsByAnimCode.ContainsKey("opened") == opened)
+            if (this.opened == opened)  return;
 
             this.opened = opened;
             ToggleWindowSash(opened);  // movement/animation only

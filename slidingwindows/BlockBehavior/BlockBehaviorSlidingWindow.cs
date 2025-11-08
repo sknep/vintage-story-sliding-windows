@@ -494,17 +494,16 @@ namespace SlidingWindows.BlockBehaviors
 
         public override void GetPlacedBlockName(StringBuilder sb, IWorldAccessor world, BlockPos pos)
         {
-            // Already set in Block.GetPlacedBlockName(), do i want to rename?
-            windowNameWithMaterial(sb);
+            // Already set in Block.GetPlacedBlockName(), 
         }
 
         private void windowNameWithMaterial(StringBuilder sb)
         {
-            if (block.Variant.TryGetValue("wood", out string wood))
+            if (block.Variant.ContainsKey("wood"))
             {
-                string windowname = sb.ToString();
+                string doorname = sb.ToString();
                 sb.Clear();
-                sb.Append($"{windowname} ({Lang.Get("material-" + wood)})");
+                sb.Append(Lang.Get("doorname-with-material", doorname, Lang.Get("material-" + block.Variant["wood"])));
             }
         }
 

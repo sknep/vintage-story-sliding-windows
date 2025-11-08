@@ -1,0 +1,50 @@
+[{
+  "ingredientPattern": "_F_,PSP,_F_",
+  "width": 3,
+  "height": 3,
+  "RecipeGroup": 1,
+  "ingredients": {
+    "F": { "type": "block", "code": "slidingwindows:fixed-1x1-wc-*", "name": "materials"},
+    "P": { "type": "item",  "code": "wildcrafttree:plank-*", "name": "wood" },
+    "S": { "type": "item",  "code": "game:ingot-leadsolder"}
+  },
+  "output": { "type": "block", "code": "slidingwindows:sliding-2x1-y-wc-{materials}", "quantity": 1 }
+},
+{
+  "ingredientPattern": "_F_,PSP,_F_",
+  "width": 3,
+  "height": 3,
+  "RecipeGroup": 1,
+  "ingredients": {
+    "F": { "type": "block", "code": "slidingwindows:fixed-1x1-wc-*", "name": "materials"},
+    "P": { "type": "item",  "code": "wildcrafttree:plank-*", "name": "wood" },
+    "S": { "type": "item",  "code": "game:solderbar*", "quantity": 4}
+  },
+  "output": { "type": "block", "code": "slidingwindows:sliding-2x1-y-wc-{materials}", "quantity": 1 }
+},
+{
+  "ingredientPattern": "_F_,PSP,_F_",
+  "width": 3,
+  "height": 3,
+  "RecipeGroup": 1,
+  "ingredients": {
+    "F": { "type": "block", "code": "slidingwindows:fixed-1x1-wc-leaded-*"},
+    "P": { "type": "item",  "code": "wildcrafttree:plank-*", "name": "wood" },
+    "S": { "type": "item",  "code": "game:ingot-leadsolder"}
+  },
+  "output": { "type": "block", "code": "slidingwindows:sliding-2x1-y-wc-leaded-{wood}", "quantity": 1 }
+},
+{
+  "ingredientPattern": "_F_,PSP,_F_",
+  "width": 3,
+  "height": 3,
+  "RecipeGroup": 1,
+  "ingredients": {
+    "F": { "type": "block", "code": "slidingwindows:fixed-1x1-wc-leaded-*"},
+    "P": { "type": "item",  "code": "wildcrafttree:plank-*", "name": "wood" },
+    "S": { "type": "item",  "code": "game:solderbar*", "quantity": 4}
+
+  },
+  "output": { "type": "block", "code": "slidingwindows:sliding-2x1-y-wc-leaded-{wood}", "quantity": 1 }
+}
+]
