@@ -27,8 +27,8 @@
 
   "slidingwindows:handbook-sliding-deprecated-desc": "This recipe is no longer available.",
   
-  "slidingwindows:handbook-sliding-y-desc": "Vertically sliding glass windows. The bottom sash moves up and down; the top sash is fixed",
-  "slidingwindows:handbook-sliding-x-desc": "Horizontally sliding windows/doors. The side with the handle moves left to right; the other side is fixed.",
+  "slidingwindows:handbook-sliding-y-desc": "Vertically sliding glass windows: The bottom sash moves up and down; the top sash is fixed.",
+  "slidingwindows:handbook-sliding-x-desc": "Horizontally sliding windows/doors: The side with the handle moves left to right; the other side is fixed.",
   "slidingwindows:handbook-fixed-desc": "Fixed windows are used in multi-sash sliding window recipes.",
 
   "slidingwindows:block-sliding-2x1-y-plain-*":   "Plain sliding 2x1 window",
