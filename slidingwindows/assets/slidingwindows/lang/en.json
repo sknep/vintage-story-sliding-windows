@@ -57,6 +57,20 @@
   "slidingwindows:block-sliding-2x1-y-wc-brown-*":   "Brown sliding 2x1 window",
   "slidingwindows:block-sliding-2x1-y-wc-leaded-*":  "Leaded sliding 2x1 window",
 
+
+  "slidingwindows:block-sliding-3x1-y-plain-*":   "Plain sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-smoky-*":   "Smoky sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-quartz-*":  "Quartz sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-vintage-*": "Vintage sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-blue-*":    "Blue sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-green-*":   "Green sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-red-*":     "Red sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-yellow-*":  "Yellow sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-violet-*":  "Violet sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-pink-*":    "Pink sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-brown-*":   "Brown sliding 3x1 window",
+  "slidingwindows:block-sliding-3x1-y-leaded-*":  "Leaded sliding 3x1 window",
+
   "slidingwindows:block-sliding-2x2-x-plain-*":   "Plain sliding 2x2 door",
   "slidingwindows:block-sliding-2x2-x-smoky-*":   "Smoky sliding 2x2 door",
   "slidingwindows:block-sliding-2x2-x-quartz-*":  "Quartz sliding 2x2 door",
@@ -95,6 +109,20 @@
   "slidingwindows:block-fixed-2x1-pink-*":    "Pink fixed 2x1 window",
   "slidingwindows:block-fixed-2x1-brown-*":   "Brown fixed 2x1 window",
   "slidingwindows:block-fixed-2x1-leaded-*":  "Leaded fixed 2x1 window",
+
+  
+  "slidingwindows:block-fixed-3x1-plain-*":   "Plain fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-smoky-*":   "Smoky fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-quartz-*":  "Quartz fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-vintage-*": "Vintage fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-blue-*":    "Blue fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-green-*":   "Green fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-red-*":     "Red fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-yellow-*":  "Yellow fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-violet-*":  "Violet fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-pink-*":    "Pink fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-brown-*":   "Brown fixed 3x1 window",
+  "slidingwindows:block-fixed-3x1-leaded-*":  "Leaded fixed 3x1 window",
 
   "slidingwindows:block-fixed-1x1-wc-plain-*":   "Plain fixed 1x1 window",
   "slidingwindows:block-fixed-1x1-wc-smoky-*":   "Smoky fixed 1x1 window",
