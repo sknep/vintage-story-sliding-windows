@@ -49,6 +49,7 @@ namespace SlidingWindows.BlockBehaviors
         public MeshData animatableOrigMesh;
         public Shape animatableShape;
         public string animatableDictKey;
+        public MeshData openMesh;
 
         public BlockBehaviorSlidingWindow(Block block) : base(block)
         {

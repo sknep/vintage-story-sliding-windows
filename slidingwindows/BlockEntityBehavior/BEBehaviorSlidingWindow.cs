@@ -8,6 +8,11 @@ using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using SlidingWindows.BlockBehaviors;
 using Vintagestory.GameContent;
+using Vintagestory.API.Common.Entities;
+using Vintagestory.Client.NoObf;
+using System.Linq;
+using System.Diagnostics;
+using Vintagestory.API.Util;
 
 #nullable disable
 
@@ -23,7 +28,8 @@ namespace SlidingWindows.BlockEntityBehaviors
 
         protected bool opened;
         protected bool invertHandles;
-        protected MeshData mesh;
+        protected MeshData closedMesh;
+        private MeshData openedMesh;
 
         // Open/closed collision + selection boxes for this controller.
         // For sliding windows we treat Block.CollisionBoxes (from the shape file)
@@ -72,14 +78,22 @@ namespace SlidingWindows.BlockEntityBehaviors
             }
         }
 
+        public bool opening { get; private set; }
+
         public BEBehaviorSlidingWindow(BlockEntity blockentity) : base(blockentity)
         {
             windowBh = Block.GetBehavior<BlockBehaviorSlidingWindow>();
         }
 
+        Stopwatch LastEventTime;
+        
         public override void Initialize(ICoreAPI api, JsonObject properties)
         {
             base.Initialize(api, properties);
+
+            Api.Logger.Debug("!! Initialize Called");
+            LastEventTime = new Stopwatch();
+            Api.Event.RegisterGameTickListener(OnGameTick, 50);
 
             SetupMeshAndBoxes(false);
 
@@ -87,6 +101,47 @@ namespace SlidingWindows.BlockEntityBehaviors
             {
                 ToggleWindowSash(true);
             }
+        }
+
+        
+        private void OnGameTick(float dt)
+        {
+            if (animUtil.animator?.ActiveAnimationCount > 0)
+            {
+                var state = animUtil.animator.GetAnimationState("opened");
+                if (state != null)
+                {
+
+                    if (opening && state.EasingFactor >= 0.997f)
+                    // if (false)
+                    {
+                        opening = false;
+                        
+                        animUtil.StopAnimation("opened");
+                        Blockentity.MarkDirty(true);
+
+                        Api.Logger.Debug($"!!!Stopping Opened Animation pos={Pos} ts={LastEventTime.ElapsedMilliseconds}!!!");
+                        LastEventTime.Restart();
+                    }
+
+                    string metaCode = state.meta?.Code ?? "null";
+                    string animCode = state.Animation?.Code ?? "null";
+                    string elemWeights = state.ElementWeights != null ? state.ElementWeights.Length.ToString() : "null";
+
+                    Api.Logger.Debug($"RunningAnimation[" +
+                        $"meta={metaCode}, " +
+                        $"anim={animCode}, " +
+                        $"frame={state.CurrentFrame:0.##}/{state.Animation?.QuantityFrames ?? 0}, " +
+                        $"progress={state.AnimProgress:0.###}, " +
+                        $"active={state.Active}, running={state.Running}, " +
+                        $"iterations={state.Iterations}, rewind={state.ShouldRewind}, " +
+                        $"playTillEnd={state.ShouldPlayTillEnd}, " +
+                        $"ease={state.EasingFactor:0.###}, weight={state.BlendedWeight:0.###}, " +
+                        $"elemWeights={elemWeights}, soundIter={state.SoundPlayedAtIteration}" +
+                        $"]");
+                }
+            }
+
         }
 
         public Vec3i getAdjacentOffset(int right, int back = 0, int up = 0)
@@ -207,6 +262,28 @@ namespace SlidingWindows.BlockEntityBehaviors
                     string animkey = Block.Shape.ToString();
                     windowBh.animatableOrigMesh = animUtil.CreateMesh(animkey, null, out Shape shape, null);
 
+                    if (Block.Attributes["openStaticShape"] != null)
+                    {
+                        var shapeCode = Block.Attributes["openStaticShape"].AsString();
+                        var shapeLoc = AssetLocation.Create(shapeCode);
+                        Shape openShape;
+                        try
+                        {
+                            openShape = Shape.TryGet(Api, shapeLoc);
+                            foreach (var asset in Api.Assets.AllAssets.Where(x => x.Key.BeginsWith("slidingwindows", "")))
+                            {
+                                Api.Logger.Debug("asset: key={0}, value={1}", asset.Key, asset.Value.GetType());
+                            }
+                            // openShape = Api.Assets.TryGet(shapeLoc)?.ToObject<Shape>();
+                            windowBh.openMesh = animUtil.CreateMesh(animkey, openShape, out openShape, null);
+                            
+                        }
+                        catch (Exception e)
+                        {
+                            Api.Logger.Error($"[SlidingWindows] Failed loading shape '{shapeLoc}': {e}");
+                        }    
+                    }
+                    
                     windowBh.animatableShape = shape;
                     windowBh.animatableDictKey = animkey;
                 }
@@ -223,7 +300,8 @@ namespace SlidingWindows.BlockEntityBehaviors
 
         protected virtual void UpdateMeshAndAnimations()
         {
-            mesh = windowBh.animatableOrigMesh.Clone();
+            closedMesh = windowBh.animatableOrigMesh.Clone();
+            openedMesh = windowBh.openMesh.Clone();
 
             float rot = RotateYRad;
 
@@ -231,7 +309,8 @@ namespace SlidingWindows.BlockEntityBehaviors
 
             if (rot != 0f)
             {
-                mesh = mesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 0, rot, 0);
+                closedMesh = closedMesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 0, rot, 0);
+                openedMesh = openedMesh.Rotate(new Vec3f(0.5f, 0.5f, 0.5f), 0, rot, 0);
             }
 
             if (invertHandles)
@@ -241,7 +320,8 @@ namespace SlidingWindows.BlockEntityBehaviors
                     .Scale(-1f, 1f, 1f)
                     .Translate(-0.5f, -0.5f, -0.5f);
 
-                mesh.MatrixTransform(matf.Values);
+                closedMesh.MatrixTransform(matf.Values);
+                openedMesh.MatrixTransform(matf.Values);
 
                 if (Api.Side == EnumAppSide.Client && animUtil?.renderer != null)
                 {
@@ -447,6 +527,8 @@ namespace SlidingWindows.BlockEntityBehaviors
             float easeInSpeed = Block.Attributes?["openingSpeed"].AsFloat(10) ?? 10;
             float easeOutSpeed = Block.Attributes?["closingSpeed"].AsFloat(10) ?? 10;
 
+            if (this.opened != opened) return;
+
             this.opened = opened;
 
             if (!opened)
@@ -460,21 +542,25 @@ namespace SlidingWindows.BlockEntityBehaviors
                     Animation = "opened",
                     Code = "opened",
                     EaseInSpeed = easeInSpeed,
-                    EaseOutSpeed = easeOutSpeed
+                    EaseOutSpeed = easeOutSpeed,
                 });
+                this.opening = true;
             }
 
-            Api?.World?.BlockAccessor.MarkBlockDirty(Pos);
-            Blockentity.MarkDirty();
+            // Api?.World?.BlockAccessor.MarkBlockDirty(Pos);
+            Blockentity.MarkDirty(true);
         }
 
-        public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tessThreadTesselator)
+        public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tesselator)
         {
-            bool skipMesh = base.OnTesselation(mesher, tessThreadTesselator);
-            if (!skipMesh)
+            var capi = Api as ICoreClientAPI;
+            if (capi != null)
             {
-                mesher.AddMeshData(mesh);
+                
             }
+            
+            Api.Logger.Debug($"!!! OnTesselation: pos={Pos} opened=${opened}, ts={LastEventTime.Elapsed.TotalMilliseconds}");
+            mesher.AddMeshData(opened ? openedMesh : closedMesh);
             return true;
         }
 
@@ -482,6 +568,11 @@ namespace SlidingWindows.BlockEntityBehaviors
         {
             base.FromTreeAttributes(tree, worldAccessForResolve);
 
+            if (Api != null)
+            {
+                Api.Logger.Debug($"!!!FromTreeAttributes pos={Pos} side={Api.Side}!!!");
+            }
+            
             bool beforeOpened = opened;
 
             RotateYRad = tree.GetFloat("rotateYRad");

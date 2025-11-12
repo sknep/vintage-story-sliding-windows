@@ -25,6 +25,7 @@
 			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-x-desc" }]
 		},
         "airtight": { "*": true },
+		"openStaticShape": "slidingwindows:shapes/block/sliding/2x2-x-open.json",
 		"glass": "{glass}",
 		"closingSpeed": 6,
 		"openingSpeed": 8,
