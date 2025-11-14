@@ -307,8 +307,8 @@
 	],
 	"animations": [
 		{
-			"name": "opened",
-			"code": "opened",
+			"name": "opening",
+			"code": "opening",
 			"quantityframes": 2,
 			"onActivityStopped": "Rewind",
 			"onAnimationEnd": "Hold",

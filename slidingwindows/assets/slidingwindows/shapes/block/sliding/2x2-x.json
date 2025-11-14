@@ -446,14 +446,20 @@
 	],
 	"animations": [
 		{
-			"name": "opened",
-			"code": "opened",
+			"name": "opening",
+			"code": "opening",
 			"quantityframes": 2,
             "onActivityStopped": "Stop",
             "onAnimationEnd": "Hold",
 			"keyframes": [
 				{
 					"frame": 0,
+					"elements": {
+						"openable-door": { "offsetX": 0.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 }
+					}
+				},
+				{
+					"frame": 1,
 					"elements": {
 						"openable-door": { "offsetX": -12.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 }
 					}
@@ -462,10 +468,10 @@
 		},
 
 		{
-			"name": "closed",
-			"code": "closed",
+			"name": "closing",
+			"code": "closing",
 			"quantityframes": 2,
-            "onActivityStopped": "Rewind",
+            "onActivityStopped": "Stop",
             "onAnimationEnd": "Hold",
 			"keyframes": [
 				{

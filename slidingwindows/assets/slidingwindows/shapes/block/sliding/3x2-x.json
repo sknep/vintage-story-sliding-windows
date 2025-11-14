@@ -663,8 +663,8 @@
 	],
 	"animations": [
 		{
-			"name": "opened",
-			"code": "opened",
+			"name": "opening",
+			"code": "opening",
 			"quantityframes": 2,
 			"onActivityStopped": "Stop",
 			"onAnimationEnd": "Stop",

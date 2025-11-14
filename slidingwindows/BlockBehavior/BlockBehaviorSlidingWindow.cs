@@ -86,15 +86,15 @@ namespace SlidingWindows.BlockBehaviors
                 return;
             }
 
-            bool opened = !beh.Opened;
+            bool isOpen = !beh.Opened;
             if (activationArgs != null)
             {
-                opened = activationArgs.GetBool("opened", opened);
+                isOpen = activationArgs.GetBool("opened", isOpen);
             }
 
-            if (beh.Opened != opened)
+            if (beh.Opened != isOpen)
             {
-                beh.ToggleWindowSashState(null, opened);
+                beh.ToggleWindowSashState(null, isOpen);
             }
         }
 
