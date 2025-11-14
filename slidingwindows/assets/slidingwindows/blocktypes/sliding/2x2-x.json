@@ -23,7 +23,7 @@
 		"reinforcable": true,
 		"handbook": {
 			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-x-desc" }],
-      "groupBy": ["sliding-2x2-x-*"]
+			"groupBy": ["sliding-2x2-x-*"]
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
