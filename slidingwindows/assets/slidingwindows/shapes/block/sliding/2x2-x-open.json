@@ -450,7 +450,7 @@
 			"name": "closing",
 			"code": "closing",
 			"quantityframes": 2,
-            "onActivityStopped": "Rewind",
+            "onActivityStopped": "PlayTillEnd",
             "onAnimationEnd": "Hold",
 			"keyframes": [
 				{

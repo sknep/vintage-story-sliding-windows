@@ -450,7 +450,7 @@
 			"name": "opening",
 			"code": "opening",
 			"quantityframes": 2,
-			"onActivityStopped": "Rewind",
+			"onActivityStopped": "PlayTillEnd",
 			"onAnimationEnd": "Hold",
 			"keyframes": [
 				{

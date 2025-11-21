@@ -94,10 +94,10 @@ namespace SlidingWindows.BlockEntityBehaviors
 
             if (Api.Side == EnumAppSide.Client)
             {
-                PrepareStaticAndAnimMeshes(); // or 
+                PrepareStaticAndAnimMeshes(); 
+                string primaryTrack = isOpen ? "closing" : "opening";
+                EnsureAnimatorTrackReady(primaryTrack);
                 UpdateStaticMeshAndRotation(isOpen);
-                InitializeAnimatorTracks("opening");
-                InitializeAnimatorTracks("closing");
                 if (animUtil?.renderer != null)
                 {
                     animUtil.renderer.ShouldRender = false;
@@ -125,6 +125,11 @@ namespace SlidingWindows.BlockEntityBehaviors
 
         internal void SetupMeshAndBoxes(bool initialSetup)
         {
+            // This method mirrors vanilla door pairing, but adapts it to optional pairing
+            // and the shallower sliding-footprint.  It may run multiple times while a window
+            // searches for a counterpart or when multi-block parts are re-placed.
+            Api.Logger?.Debug($">>> SetupMeshAndBoxes(initialSetup={initialSetup}, pairable={windowBh?.pairable})");
+
             if (LeftWindow == this || RightWindow == this) return;
 
             // Early out if we know this window is ace
@@ -212,7 +217,8 @@ namespace SlidingWindows.BlockEntityBehaviors
             }
             else if (!windowBh.pairable && initialSetup)
             {
-                // lonely unpaired window
+                // Lonely unpaired window: ensure stale offsets are cleared so it behaves
+                // like a single leaf regardless of what was saved in the chunk data.
                 LeftWindow = null;
                 RightWindow = null;
                 invertHandles = false;
@@ -224,6 +230,7 @@ namespace SlidingWindows.BlockEntityBehaviors
         {
             if (Api.Side != EnumAppSide.Client) return;
             if (windowBh == null) return;
+            Api.Logger.Debug($">>> PrepareStaticAndAnimMeshes() invoked for {Pos}.");
             
             // register default mesh as closed shape with animation
             string closedAnimKey = Block.Shape.ToString();
@@ -282,8 +289,6 @@ namespace SlidingWindows.BlockEntityBehaviors
         {
             if (Api.Side != EnumAppSide.Client || animUtil == null) return;
 
-            PrepareStaticAndAnimMeshes();
-
             MeshData animMesh;
             Shape animShape;
             string animKey;
@@ -305,21 +310,13 @@ namespace SlidingWindows.BlockEntityBehaviors
                 return;
             }
 
-            if (animMesh == null || animShape == null) return;
+            if (animMesh == null || animShape == null)
+            {
+                Api.Logger.Debug($">>> InitializeAnimatorTracks({animCode}) aborted - missing mesh/shape.");
+                return;
+            }
             Api.Logger.Debug($">>> Animation meshes prepared, now calling animUtil.InitializeAnimator({animKey}) ");
             animUtil.InitializeAnimator(animKey, animMesh, animShape, null);
-        }
-
-
-        private void InitializeAnimatorForOpenState(string animCode)
-        {
-            if (Api.Side != EnumAppSide.Client || animUtil == null) return;
-        
-            InitializeAnimatorTracks(animCode);
-
-            // UpdateStaticMeshAndRotation(isOpen);
-            // Api.World.BlockAccessor.MarkBlockDirty(Pos);
-            // Blockentity.MarkDirty();
 
         }
 
@@ -494,8 +491,8 @@ namespace SlidingWindows.BlockEntityBehaviors
 
         public void ToggleSashState(IPlayer byPlayer, bool toOpenState, bool fromPartner = false)
         {
-            Api.Logger.Debug($">>> ToggleSashState called with toOpenState = {toOpenState} while isOpen = {isOpen}");
-            // If we're already in that state, bail
+            Api.Logger.Debug($">>> ToggleSashState -> {toOpenState} (currently {isOpen}), fromPartner={fromPartner}");
+            // If we're already in that state, bail.
             // if you want to be explicit about the 'opening' animation: (animUtil.activeAnimationsByAnimCode.ContainsKey("opening") == isOpen)
             if (isOpen == toOpenState)  return;
             string animCode = toOpenState ? "opening" : "closing";
@@ -505,21 +502,7 @@ namespace SlidingWindows.BlockEntityBehaviors
 
             Api.Logger.Debug($">>> Just set isOpen to {isOpen} instead of {wasOpen} will play animation {animCode}.");
 
-            // Sync state to paired neighbors, but only from the "source" leaf so no recursion
-            if (!fromPartner && Api.Side == EnumAppSide.Server)
-            {
-                if (LeftWindow != null && invertHandles)
-                {
-                    LeftWindow.ToggleSashState(byPlayer, isOpen, true);
-                }
-                if (RightWindow != null)
-                {
-                    RightWindow.ToggleSashState(byPlayer, isOpen, true);
-                }
-                Blockentity.MarkDirty(true);
-            }
-
-            // ---- Sounds (always per-leaf) ----
+            // 2) Play audio for whichever leaf actually toggled.
             float pitch = isOpen ? 0.8f : 0.7f;
             var sound = isOpen ? windowBh?.OpenSound : windowBh?.CloseSound;
 
@@ -557,14 +540,53 @@ namespace SlidingWindows.BlockEntityBehaviors
                     1f
                 );
             }
+            // 3) Client visuals: start/stop animation + refresh static mesh/tesselation.
+            bool animationStarted = false;
             if (Api.Side == EnumAppSide.Client)
             {
                 Api.Logger.Debug($">>> ToggleSashState(toOpenState={toOpenState}) will call ToggleSashAnimation({animCode}), UpdateStaticMeshAndRotation({isOpen}) and then mark dirty");
-                ToggleSashAnimation(animCode);  // movement/animation only
+                animationStarted = ToggleSashAnimation(animCode);  // movement/animation only
+
                 UpdateStaticMeshAndRotation(isOpen);
                 Api.World.BlockAccessor.MarkBlockDirty(Pos);
                 // Blockentity.MarkDirty();
             }
+
+            // 1) Propagate state to paired neighbors, but only from the "source" leaf so no recursion.
+            bool shouldSync = true;
+
+            if (!fromPartner && shouldSync)
+            {
+                if (LeftWindow != null && invertHandles)
+                {
+                    LeftWindow.ToggleSashState(byPlayer, isOpen, true);
+                }
+                if (RightWindow != null)
+                {
+                    RightWindow.ToggleSashState(byPlayer, isOpen, true);
+                }
+            }
+            if (Api.Side == EnumAppSide.Server && shouldSync)
+            {
+                Blockentity.MarkDirty(true);
+            }
+
+            if (Api.Side == EnumAppSide.Server)
+            {
+                UpdateNeighbors();
+            }
+        }
+
+        private void UpdateNeighbors()
+        {
+            if (Api.Side != EnumAppSide.Server || windowBh == null) return;
+            Api.Logger?.Debug($">>> UpdateNeighbors() notifying blocks in {windowBh.width}x{windowBh.height} footprint.");
+
+            windowBh.IterateOverEach(Pos, RotateYRad, invertHandles, blockPos =>
+            {
+                Api.World.BlockAccessor.TriggerNeighbourBlockUpdate(blockPos);
+                return true;
+            });
         }
 
         public void RunAfterMs(int delayMs, Action callback)
@@ -589,10 +611,18 @@ namespace SlidingWindows.BlockEntityBehaviors
                 cb?.Invoke();
             }, delayMs);
         }
-        void StartAnimationAndCallback(string animCode)
+        bool StartAnimationAndCallback(string animCode)
         {
-            if (Api.Side != EnumAppSide.Client || animUtil == null) return;
+            if (Api.Side != EnumAppSide.Client || animUtil == null) return false;
             Api.Logger.Debug($">>> In StartAnimationAndCallback('{animCode}') ");
+
+            CompletePendingAnimationCallbacks();
+
+            if (!EnsureAnimatorTrackReady(animCode))
+            {
+                Api.Logger.Debug($">>> StartAnimationAndCallback('{animCode}') aborted - animator track not ready.");
+                return false;
+            }
 
             float easeInSpeed = Block.Attributes?["openingSpeed"].AsFloat(10) ?? 10;
             float easeOutSpeed = Block.Attributes?["closingSpeed"].AsFloat(10) ?? 10;
@@ -616,45 +646,118 @@ namespace SlidingWindows.BlockEntityBehaviors
             // disable the tesselator for the next draw
             skipStaticTesselation = true;
             Api.World.BlockAccessor.MarkBlockDirty(Pos);
+            
+            string currentAnimCode = animCode;
+            string nextAnimCode = animCode == "closing" ? "opening" : "closing";
 
             // this timeout does not make sense
             RunAfterMs((int)(baseDurationMs * 5), () =>
             {
-                Api.Logger.Debug($">>>>> Callback for Animation '{animCode}' ran after {baseDurationMs * 5}ms, will set ShouldRender to false, skipStaticTesselation to false (again) and mark dirty on client");
+                Api.Logger.Debug($">>>>> Callback for Animation '{currentAnimCode}' ran after {baseDurationMs * 5}ms, will set ShouldRender to false, skipStaticTesselation to false (again) and mark dirty on client");
 
                 // enable the tesselator for the next draw
                 skipStaticTesselation = false;
                 UpdateStaticMeshAndRotation(isOpen);
-                
-                // disable the renderer for the next draw
-                if (animUtil?.renderer != null) animUtil.renderer.ShouldRender = false;
+                // if (animUtil != null)
+                // {
+                // //     animUtil.StopAnimation(currentAnimCode);
+                //     if (animUtil.renderer != null)
+                //     {
+                //         animUtil.renderer.ShouldRender = false;
+                //     }
+                // }
 
                 Api.World.BlockAccessor.MarkBlockDirty(Pos);
 
-                // Pre-initialize the opposite direction for next time
-                string nextAnimCode = animCode == "closing" ? "opening" : "closing";
-                Api.Logger.Debug($"Prewarming animation for {nextAnimCode}");
-                InitializeAnimatorTracks(nextAnimCode);
-                // return to base state if changed
-                if (animUtil?.renderer != null) animUtil.renderer.ShouldRender = false;
+                RunAfterMs(2, () =>
+                {
+                    // Pre-initialize the opposite direction for next time
+                    Api.Logger.Debug($">>> Prewarming animation for {nextAnimCode}");
+                    EnsureAnimatorTrackReady(nextAnimCode);
+                    // if (animUtil != null)
+                    // {
+                    //     animUtil.StopAnimation(currentAnimCode);
+                    //     if (animUtil.renderer != null)
+                    //     {
+                    //         animUtil.renderer.ShouldRender = false;
+                    //     }
+                    // }
+                    // Api.World.BlockAccessor.MarkBlockDirty(Pos);
+                });
+                RunAfterMs(10, () =>
+                {
+                    if (animUtil != null)
+                    {
+                        animUtil.StopAnimation(currentAnimCode);
+                        if (animUtil.renderer != null)
+                        {
+                            animUtil.renderer.ShouldRender = false;
+                        }
+                    }
+                    Api.World.BlockAccessor.MarkBlockDirty(Pos);
+                });
 
+                // return to base state if changed
+                // if (animUtil?.renderer != null) animUtil.renderer.ShouldRender = false;
                 // Api.Logger.Debug($">>> Expect OnTesselate to run soon, will update renderer's ShouldRender to false and swap to static tesselation for currentStaticMesh: {currentStaticMeshType}");
             });
 
+            return true;
         }
-        private void ToggleSashAnimation(string animCode)
+        bool EnsureAnimatorTrackReady(string animCode)
+        {
+            if (Api.Side != EnumAppSide.Client || animUtil == null) return false;
+
+            bool missingClosedMeshes = windowBh?.closedStaticMesh == null || windowBh?.closedAnimMesh == null;
+            bool missingOpenedMeshes = animCode == "closing" && windowBh?.openedStaticMesh == null && windowBh?.openedAnimMesh == null;
+
+            if (missingClosedMeshes || missingOpenedMeshes)
+            {
+                PrepareStaticAndAnimMeshes();
+            }
+
+            InitializeAnimatorTracks(animCode);
+            return true;
+        }
+
+        void CompletePendingAnimationCallbacks()
+        {
+            if (capi == null) return;
+
+            while (scheduledCallbackId != -1)
+            {
+                capi.Event.UnregisterCallback(scheduledCallbackId);
+                scheduledCallbackId = -1;
+                var cb = scheduledCallback;
+                scheduledCallback = null;
+                cb?.Invoke();
+            }
+        }
+        private bool ToggleSashAnimation(string animCode)
         {
 
             // Server is not invited to the animation party
-            if (Api.Side != EnumAppSide.Client || animUtil == null) return;
+            if (Api.Side != EnumAppSide.Client || animUtil == null) return false;
 
-            Api.Logger.Debug($">>> Just called ToggleSashAnimation('{animCode}') while isOpen = {isOpen}, will initalize animators and start animation");
+            Api.Logger.Debug($">>> ToggleSashAnimation('{animCode}') while isOpen = {isOpen}. Renderer before StartAnimation: {animUtil.renderer?.ShouldRender}");
 
             // Choose the correct anim mesh (ClosedAnim vs OpenAnim, once you’ve wired those up)
             // InitializeAnimatorForOpenState(animCode);
 
+            // Need a matching animation mesh ready for each sash
+            EnsureAnimatorTrackReady(animCode);
+
             // Actually play the right clip
-            StartAnimationAndCallback(animCode);
+            bool started = StartAnimationAndCallback(animCode);
+
+            if (!started)
+            {
+                Api.Logger.Debug($">>> ToggleSashAnimation('{animCode}') failed to start animation.");
+                return false;
+            }
+
+            Api.Logger.Debug($">>> ToggleSashAnimation('{animCode}') invoked StartAnimation. Renderer after StartAnimation: {animUtil.renderer?.ShouldRender}");
+            return true;
         }
 
         // marking the block dirty will trigger OnTesselation, eventually. No contract for frame or time frame, may be batched
@@ -670,34 +773,37 @@ namespace SlidingWindows.BlockEntityBehaviors
 
             // Api.Logger.Debug($">>> In OnTesselation, isOpen = {isOpen}, currentStaticMeshType = {currentStaticMeshType}");
 
-            bool unreliableIsAnimating = base.OnTesselation(mesher, tessThreadTesselator);
-            if (animUtil != null && animUtil.renderer != null)
-            {
-                Api.Logger.Debug($">>> In OnTesselation, AnimUtil believes it {(unreliableIsAnimating ? "IS" : "IS NOT")} currently animating, while ShouldRender = {animUtil.renderer.ShouldRender}");
-                foreach (string animCode in animUtil.activeAnimationsByAnimCode.Keys) Api.Logger.Debug($">>> In OnTesselation, AnimCode '{animCode}' is active");
-            }
+//             bool unreliableIsAnimating = base.OnTesselation(mesher, tessThreadTesselator);
+            bool rendererActive = animUtil?.renderer?.ShouldRender == true;
+            // bool animatorActivelyDrawing = unreliableIsAnimating && rendererActive;
+
+            // if (animUtil != null && animUtil.renderer != null)
+            // {
+            //     Api.Logger.Debug($">>> In OnTesselation, AnimUtil reports {(unreliableIsAnimating ? "active" : "idle")} animation; renderer.ShouldRender={animUtil.renderer.ShouldRender}, animatorActivelyDrawing={animatorActivelyDrawing}");
+            //     foreach (string animCode in animUtil.activeAnimationsByAnimCode.Keys) Api.Logger.Debug($">>> In OnTesselation, AnimCode '{animCode}' is active");
+            // }
             // check whether timeout has finished
             // skipStaticTesselation should be false if animation is expected to be done by now
             // ShouldRender and skipStaticTesselation should be in sync before mesher.AddMeshData() is called
             // animUtil doesn't exist on load
 
             
-            if (animUtil?.renderer != null && skipStaticTesselation == true)
-            {
-                animUtil.renderer.ShouldRender = true;
-                Api.Logger.Debug($">>> In OnTesselation, just set ShouldRender={animUtil.renderer.ShouldRender} (even if unnecessary)");
-            }
+            // bool canUseStaticMesh = !skipStaticTesselation && !rendererActive;
 
             if (!skipStaticTesselation && currentStaticMesh != null && currentStaticMesh.VerticesCount > 0 )
             {
-                // if (animUtil != null && animUtil?.renderer != null) animUtil.renderer.ShouldRender = false;  Api.Logger.Debug($">>> In OnTesselation, just set ShouldRender={animUtil.renderer.ShouldRender} to match skipStaticTesselation = false");
+                if (animUtil != null && animUtil.renderer != null && animUtil.renderer.ShouldRender)
+                {
+                    animUtil.renderer.ShouldRender = false;
+                }
                 
                 // bake this custom model into the chunk mesh as static geometry
                 Api.Logger.Debug($">>> In OnTesselation, Adding currentStaticMesh ({currentStaticMeshType}) to mesherPool for static tesselation this render");
                 mesher.AddMeshData(currentStaticMesh);
             } else
             {
-                Api.Logger.Debug($">>> In OnTesselation, NOT adding currentStaticMesh ({currentStaticMeshType}) to mesherPool for this render, no static tesselation");
+                string reason = skipStaticTesselation ? $"skipStaticTesselation={skipStaticTesselation}" : "no static mesh";
+                Api.Logger.Debug($">>> In OnTesselation, NOT adding currentStaticMesh ({currentStaticMeshType}); reason: {reason}");
             }
 
             // return true to skip engine's default mesh tesselation; false will also add the default model to the mesher
@@ -708,8 +814,6 @@ namespace SlidingWindows.BlockEntityBehaviors
         {
             base.FromTreeAttributes(tree, worldAccessForResolve);
 
-            bool beforeOpened = isOpen;
-
             RotateYRad = tree.GetFloat("rotateYRad");
             isOpen = tree.GetBool("isOpen");
             invertHandles = tree.GetBool("invertHandles");
@@ -717,21 +821,43 @@ namespace SlidingWindows.BlockEntityBehaviors
             rightWindowOffset = tree.GetVec3i("rightWindowPos");
 
 
-            if (Api != null && Api.Side is EnumAppSide.Client)
-            {
-                // Api.Logger.Debug($">>> FromTreeAttributes will invoke starting methods (isOpen = {isOpen})");
-                // PrepareStaticAndAnimMeshes();
-                // // what order to call this?
-                // if (animUtil?.renderer != null)
-                // {
-                //     animUtil.renderer.rotationDeg.Y = RotateYRad * GameMath.RAD2DEG;
-                // }
-                // UpdateStaticMeshAndRotation(isOpen);
-                // InitializeAnimatorTracks("opening");
-                // InitializeAnimatorTracks("closing");
+            if (Api == null) return;
 
-                // UpdateHitBoxes();
-                // Api.World.BlockAccessor.MarkBlockDirty(Pos);
+            // Re-run local transforms before rendering so collision + visuals match the replicated state.
+            UpdateHitBoxes();
+
+            if (Api.Side is EnumAppSide.Client)
+            {
+                Api.Logger.Debug($">>> rebuilding client state (isOpen={isOpen}, rot={RotateYRad}).");
+
+                bool needAnimPrep =
+                    windowBh?.closedStaticMesh == null ||
+                    windowBh?.closedAnimMesh == null ||
+                    (Block.Attributes?["openedShape"].Exists == true && windowBh?.openedStaticMesh == null);
+
+                if (needAnimPrep)
+                {
+                    PrepareStaticAndAnimMeshes();
+                    string primaryTrack = isOpen ? "closing" : "opening";
+                    EnsureAnimatorTrackReady(primaryTrack);
+                }
+
+                bool animationRunning = animUtil?.renderer?.ShouldRender == true;
+
+                if (!animationRunning)
+                {
+                    // Safe to swap static meshes immediately because no clip is currently running.
+                    UpdateStaticMeshAndRotation(isOpen);
+                    if (animUtil?.renderer != null)
+                    {
+                        animUtil.renderer.ShouldRender = false;
+                    }
+                    Api.World.BlockAccessor.MarkBlockDirty(Pos);
+                }
+                else
+                {
+                    Api.Logger.Debug($">>> Deferring static mesh rebuild because an animation is still active.");
+                }
             }
         }
 
