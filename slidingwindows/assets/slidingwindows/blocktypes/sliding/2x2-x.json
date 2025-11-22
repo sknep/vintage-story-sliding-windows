@@ -18,7 +18,7 @@
 		] },
 		{ "code": "wood", "states": ["aged"], "loadFromProperties": "game:block/wood" }
 	],
-	"shape": { "base": "slidingwindows:block/sliding/2x2-x" },
+	"shape": { "base": "slidingwindows:block/sliding/2x2-x-closed" },
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
