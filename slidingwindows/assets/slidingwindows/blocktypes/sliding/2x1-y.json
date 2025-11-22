@@ -22,7 +22,8 @@
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-y-desc" }]
+			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-y-desc" }],
+			"groupBy": ["sliding-2x1-y-*"]
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
