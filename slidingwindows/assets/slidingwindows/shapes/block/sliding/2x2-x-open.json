@@ -30,9 +30,9 @@
 			"children": [
 				{
 					"name": "openable-door",
-					"from": [ 6.5, 29.0, 1.95 ],
-					"to": [ 24.0, 32.0, 4.95 ],
-					"rotationOrigin": [ 6.5, 32.0, 3.5 ],
+					"from": [ -5.5, 29.0, 1.95 ],
+					"to": [ 12.0, 32.0, 4.95 ],
+					"rotationOrigin": [ -5.5, 32.0, 3.5 ],
 					"faces": {
 						"north": { "texture": "#wood", "uv": [ 0.0, 13.0, 17.5, 16.0 ] },
 						"east": { "texture": "#wood", "uv": [ 13.0, 7.0, 16.0, 10.0 ] },
@@ -44,8 +44,8 @@
 					"children": [
 						{
 							"name": "handle",
-							"from": [ 15.75, -14.0, -0.75 ],
-							"to": [ 16.75, -11.0, 3.75 ],
+							"from": [ 15.75, -18.0, -0.75 ],
+							"to": [ 16.75, -6.0, 3.75 ],
 							"rotationOrigin": [ 16.0, -12.5, 1.0 ],
 							"faces": {
 								"north": { "texture": "#wood", "uv": [ 13.0, 7.0, 14.0, 10.0 ] },
@@ -105,7 +105,7 @@
 							"renderPass": 3,
 							"rotationOrigin": [ 9.0, -13.0, 0.0 ],
 							"faces": {
-								"north": { "texture": "#glass", "uv": [ 0.0, 0.0, 16.0, 16.0 ], "rotation": 180 },
+								"north": { "texture": "#glass", "uv": [ 0.0, 0.0, 13.0, 13.0 ], "rotation": 180 },
 								"east": { "texture": "#glass", "uv": [ 0.0, 0.0, 0.5, 13.0 ], "enabled": false },
 								"south": { "texture": "#glass", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
 								"west": { "texture": "#glass", "uv": [ 0.0, 0.0, 0.5, 13.0 ], "enabled": false },
@@ -120,7 +120,7 @@
 							"renderPass": 3,
 							"rotationOrigin": [ 9.0, -13.0, 0.0 ],
 							"faces": {
-								"north": { "texture": "#glass", "uv": [ 0.0, 0.0, 16.0, 16.0 ], "rotation": 180 },
+								"north": { "texture": "#glass", "uv": [ 0.0, 0.0, 13.0, 13.0 ], "rotation": 180 },
 								"east": { "texture": "#glass", "uv": [ 0.0, 0.0, 0.5, 13.0 ], "enabled": false },
 								"south": { "texture": "#glass", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
 								"west": { "texture": "#glass", "uv": [ 0.0, 0.0, 0.5, 13.0 ], "enabled": false },
@@ -305,7 +305,7 @@
 							"renderPass": 3,
 							"rotationOrigin": [ 9.0, -13.0, 0.0 ],
 							"faces": {
-								"north": { "texture": "#glass", "uv": [ 0.0, 0.0, 16.0, 16.0 ], "rotation": 180 },
+								"north": { "texture": "#glass", "uv": [ 0.0, 0.0, 13.0, 13.0 ], "rotation": 180 },
 								"east": { "texture": "#glass", "uv": [ 0.0, 0.0, 0.5, 13.0 ], "enabled": false },
 								"south": { "texture": "#glass", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
 								"west": { "texture": "#glass", "uv": [ 0.0, 0.0, 0.5, 13.0 ], "enabled": false },
@@ -320,7 +320,7 @@
 							"renderPass": 3,
 							"rotationOrigin": [ 9.0, -13.0, 0.0 ],
 							"faces": {
-								"north": { "texture": "#glass", "uv": [ 0.0, 0.0, 16.0, 16.0 ], "rotation": 180 },
+								"north": { "texture": "#glass", "uv": [ 0.0, 0.0, 13.0, 13.0 ], "rotation": 180 },
 								"east": { "texture": "#glass", "uv": [ 0.0, 0.0, 0.5, 13.0 ], "enabled": false },
 								"south": { "texture": "#glass", "uv": [ 0.0, 0.0, 16.0, 16.0 ] },
 								"west": { "texture": "#glass", "uv": [ 0.0, 0.0, 0.5, 13.0 ], "enabled": false },
@@ -447,20 +447,18 @@
 	],
 	"animations": [
 		{
-			"name": "opening",
-			"code": "opening",
+			"name": "closing",
+			"code": "closing",
 			"quantityframes": 2,
-			"onActivityStopped": "Stop",
-			"onAnimationEnd": "Hold",
+            "onActivityStopped": "Stop",
+            "onAnimationEnd": "Hold",
 			"keyframes": [
 				{
 					"frame": 0,
 					"elements": {
-						"openable-door": { "offsetX": -12.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 }
+						"openable-door": { "offsetX": 12.0, "offsetY": 0.0, "offsetZ": 0.0, "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 }
 					}
 				}
-			]	
+			]
 		}
-		
-	]
-}
+	]}

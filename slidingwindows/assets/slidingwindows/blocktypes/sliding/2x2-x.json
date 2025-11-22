@@ -26,11 +26,12 @@
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
-		"closingSpeed": 6,
+		"closingSpeed": 8,
 		"openingSpeed": 8,
 		"width": 2,
 		"height": 2,
 		"pairable": true,
+		"openedShape": "slidingwindows:shapes/block/sliding/2x2-x-open.json",
 		"openSound": "game:sounds/wearable/scale1",
 		"closeSound": "game:sounds/wearable/scale1",
 		"secondarySounds": {
