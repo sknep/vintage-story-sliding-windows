@@ -18,7 +18,7 @@
 		] },
 		{ "code": "wood", "states": ["aged"], "loadFromProperties": "game:block/wood" }
 	],
-	"shape": { "base": "slidingwindows:block/sliding/2x1-y" },
+	"shape": { "base": "slidingwindows:block/sliding/2x1-y-closed" },
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
@@ -31,6 +31,8 @@
 		"openingSpeed": 8,
 		"width": 1,
 		"height": 2,
+		"pairable": false,
+		"openedShape": "slidingwindows:shapes/block/sliding/2x1-y-open.json",
 		"openSound": "game:sounds/wearable/scale1",
 		"closeSound": "game:sounds/wearable/scale1",
 		"secondarySounds": {

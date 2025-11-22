@@ -20,11 +20,12 @@
                 "wildcrafttree:block/wood"
     		]}
 	],
-	"shape": { "base": "slidingwindows:block/sliding/2x2-x" },
+	"shape": { "base": "slidingwindows:block/sliding/2x2-x-closed" },
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-x-desc" }]
+			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-x-desc" }],
+			"groupBy": ["sliding-2x2-x-wc-*"]
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
@@ -33,6 +34,7 @@
 		"width": 2,
 		"height": 2,
 		"pairable": true,
+		"openedShape": "slidingwindows:shapes/block/sliding/2x2-x-open.json",
 		"openSound": "game:sounds/wearable/scale1",
 		"closeSound": "game:sounds/wearable/scale1",
 		"secondarySounds": {

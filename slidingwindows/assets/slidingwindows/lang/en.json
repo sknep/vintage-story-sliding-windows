@@ -1,4 +1,4 @@
-{
+{  
   "slidingwindows:block-sliding-window-plain-*":   "Plain single-hung glass window",
   "slidingwindows:block-sliding-window-smoky-*":   "Smoky single-hung glass window",
   "slidingwindows:block-sliding-window-quartz-*":  "Quartz single-hung glass window",
@@ -84,6 +84,19 @@
   "slidingwindows:block-sliding-2x2-x-brown-*":   "Brown sliding 2x2 door",
   "slidingwindows:block-sliding-2x2-x-leaded-*":  "Leaded sliding 2x2 door",
 
+  "slidingwindows:block-sliding-3x2-x-plain-*":   "Plain sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-smoky-*":   "Smoky sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-quartz-*":  "Quartz sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-vintage-*": "Vintage sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-blue-*":    "Blue sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-green-*":   "Green sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-red-*":     "Red sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-yellow-*":  "Yellow sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-violet-*":  "Violet sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-pink-*":    "Pink sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-brown-*":   "Brown sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-leaded-*":  "Leaded sliding 3x2 door",
+
   "slidingwindows:block-fixed-1x1-plain-*":   "Plain fixed 1x1 window",
   "slidingwindows:block-fixed-1x1-smoky-*":   "Smoky fixed 1x1 window",
   "slidingwindows:block-fixed-1x1-quartz-*":  "Quartz fixed 1x1 window",
@@ -162,6 +175,21 @@
   "slidingwindows:block-sliding-2x2-x-wc-violet-*":  "Violet sliding 2x2 door",
   "slidingwindows:block-sliding-2x2-x-wc-pink-*":    "Pink sliding 2x2 door",
   "slidingwindows:block-sliding-2x2-x-wc-brown-*":   "Brown sliding 2x2 door",
-  "slidingwindows:block-sliding-2x2-x-wc-leaded-*":  "Leaded sliding 2x2 door"
+  "slidingwindows:block-sliding-2x2-x-wc-leaded-*":  "Leaded sliding 2x2 door",
+
+  "slidingwindows:block-sliding-3x2-x-wc-plain-*":   "Plain sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-smoky-*":   "Smoky sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-quartz-*":  "Quartz sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-vintage-*": "Vintage sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-blue-*":    "Blue sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-green-*":   "Green sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-red-*":     "Red sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-yellow-*":  "Yellow sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-violet-*":  "Violet sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-pink-*":    "Pink sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-brown-*":   "Brown sliding 3x2 door",
+  "slidingwindows:block-sliding-3x2-x-wc-leaded-*":  "Leaded sliding 3x2 door",
+
+  "slidingwindows:block-*":   "Missing label (Sliding Windows)"
 
 }
