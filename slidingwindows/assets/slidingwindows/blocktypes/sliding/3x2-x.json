@@ -1,0 +1,120 @@
+{
+    "code": "sliding-3x2-x",
+	"class": "BlockGeneric",
+	"entityClass": "Generic",
+	"behaviors": [ 
+		{ "name": "Lockable" },
+		{ "name": "SlidingWindow" },
+		{ "name": "BlockEntityInteract" }
+	], 
+	"entityBehaviors": [
+		{ "name": "SlidingWindowBE" }
+],
+	"variantgroups": [
+        { "code": "glass", "states": [
+			"plain","smoky","quartz","vintage",
+			"blue","green","red","yellow","violet",
+			"pink","brown", "leaded"
+		] },
+		{ "code": "wood", "states": ["aged"], "loadFromProperties": "game:block/wood" }
+	],
+	"shape": { "base": "slidingwindows:block/sliding/3x2-x" },
+	"attributes": {
+		"reinforcable": true,
+		"handbook": {
+			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-x-desc" }]
+		},
+        "airtight": { "*": true },
+		"glass": "{glass}",
+		"closingSpeed": 8,
+		"openingSpeed": 8,
+		"width": 2,
+		"height": 3,
+		"pairable": true,
+		"openedShape": "slidingwindows:shapes/block/sliding/3x2-x-open.json",
+		"openSound": "game:sounds/wearable/scale1",
+		"closeSound": "game:sounds/wearable/scale1",
+		"secondarySounds": {
+			"open": "game:sounds/wearable/brigandine2",
+			"close": "game:sounds/player/seal"
+		}
+
+	},
+    "actionLangCode": "game:blockhelp-door-toggle",
+	"creativeinventory": {
+		"general": ["*"],
+		"construction": ["*"]
+	},
+    "textures": {
+        "glass": {
+			 "base": "game:block/glass/{glass}"
+		},
+		"black":  { "base": "game:block/black" },
+		"white":  { "base": "game:block/linen" },
+		"transparent":  { "base": "game:block/transparent" },
+		"wood":  { 
+			"base": "game:block/wood/debarked/{wood}",
+				"blendedOverlays": [{ "base": "slidingwindows:block/2x1-overlay", "blendMode": "Overlay" }] 
+		},
+		"putty": { "base": "game:block/glass/frame" }
+
+    },
+	"drawtype": "json",
+	"renderPass": "OpaqueNoCull",
+	"faceCullMode": "NeverCull",
+	"blockmaterial": "Glass",
+	"sideAo": { "all": false },
+	"heldTpIdleAnimation": "holdunderarm",
+	"replaceable": 100,
+	"resistance": 1,
+	"lightAbsorption": 0.3,
+	"sidesolid": {
+		"all": false
+	},
+	"sideopaque": {
+		"all": false
+	},
+	"collisionboxes": [
+		{ 
+			"x1": 0.0, "y1": 0, "z1": 0.5, 
+			"x2": 1.09375, "y2": 3, "z2": 0.69
+		},
+		{ 
+			"x1": 0.90625, "y1": 0.0, "z1": 0.31, 
+			"x2": 2.0, "y2": 3, "z2": 0.5 
+		},
+		{ 
+			"x1": 0.15326, "y1": 0.0, "z1": 0.31, 
+			"x2": 1.24701, "y2": 3, "z2": 0.5 
+		}
+	],
+	"sounds": {
+		"place": "game:block/planks",
+		"hit": "game:block/glass",
+		"break": "game:block/glass"
+	},
+	"guiTransform": {
+		"origin": { "x": 0.95, "y": 0.9, "z": 0.6 },
+		"scale": 0.5
+	},
+
+	"fpHandTransform": {
+		"translation": { "x": -0.77, "y": 0.18, "z": 0.72 },
+		"rotation": { "x": 98, "y": 42, "z": 0 },
+		"origin": { "x": 0.5, "y": 0.7, "z": 0.5 },
+		"scale": 0.3
+	},
+	"tpHandTransform": {
+		"translation": { "x": -0.94, "y": -1.42, "z": -1.4 },
+		"rotation": { "x": 13, "y": 11, "z": 59 },
+		"origin": { "x": 1, "y": 1, "z": 0.5 },
+		"scale": 0.5
+	},
+	"groundTransform": {
+		"translation": { "x": 0, "y": 0, "z": 0 },
+		"rotation": { "x": -90, "y": 0, "z": 0 },
+		"origin": { "x": 0.5, "y": 1, "z": 0.85 },
+		"scale": 3
+	},
+	"materialDensity": 200
+}
