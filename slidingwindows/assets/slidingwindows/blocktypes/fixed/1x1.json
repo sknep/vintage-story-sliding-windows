@@ -16,6 +16,7 @@
 		] },
 		{ "code": "wood", "states": ["aged"], "loadFromProperties": "game:block/wood" }
 	],
+
     "shape": { "base": "slidingwindows:block/fixed/1x1" },
     "collisionboxes": [
         { "x1": 0.0, "y1": 0.0, "z1": 0.4, "x2": 1.0, "y2": 1.0, "z2": 0.6 }
@@ -24,8 +25,12 @@
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-fixed-desc" }],
-			"groupBy": [ "fixed-1x1-*" ]
+			"extraSections": [
+				{ "title": "slidingwindows:handbook-generic-recipe-title", "text": "slidingwindows:handbook-generic-recipe-text" },
+				{ "title": "", "text": "slidingwindows:handbook-fixed-desc" }
+			],
+			"groupBy": [ "fixed-1x1-*" ],
+			"exclude": true 
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
@@ -34,6 +39,11 @@
 		"width": 1,
 		"height": 1,
         "handopenable": false
+	},
+	"attributesByType": {
+		"fixed-1x1-smoky-oak": {
+			"handbook": { "exclude": false }
+		}
 	},
 	"creativeinventory": {
 		"general": ["*"],

@@ -23,7 +23,8 @@
 		"reinforcable": true,
 		"handbook": {
 			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-deprecated-desc" }],
-			"groupBy": ["sliding-window-*"]
+			"groupBy": ["sliding-window-*"],
+			"exclude": true
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",

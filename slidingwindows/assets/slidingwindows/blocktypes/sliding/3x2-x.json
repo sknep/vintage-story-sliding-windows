@@ -22,7 +22,13 @@
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-x-desc" }]
+			"extraSections": [
+				{ "title": "slidingwindows:handbook-generic-recipe-title", "text": "slidingwindows:handbook-generic-recipe-text" },
+				{ "title": "slidingwindows:handbook-sliding-title", "text": "slidingwindows:handbook-sliding-x-desc" }
+			],
+			"exclude": true,
+			"groupBy": ["sliding-3x2-x-*"],
+			"groupName": "handbook-sliding-3x2-x"
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
@@ -39,6 +45,9 @@
 			"close": "game:sounds/player/seal"
 		}
 
+	},
+	"attributesByType": {
+		"sliding-3x2-x-smoky-oak": { "handbook": { "exclude": false } }
 	},
     "actionLangCode": "game:blockhelp-door-toggle",
 	"creativeinventory": {

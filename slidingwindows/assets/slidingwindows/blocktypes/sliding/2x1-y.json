@@ -22,8 +22,13 @@
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-y-desc" }],
-			"groupBy": ["sliding-2x1-y-*"]
+			"extraSections": [
+				{ "title": "slidingwindows:handbook-generic-recipe-title", "text": "slidingwindows:handbook-generic-recipe-text" },
+				{ "title": "slidingwindows:handbook-sliding-title", "text": "slidingwindows:handbook-sliding-y-desc" }
+			],
+			"exclude": true,
+			"groupBy": ["sliding-2x1-y-*"],
+			"groupName": "handbook-sliding-2x1-y"
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
@@ -51,6 +56,11 @@
 		]
 
 	},
+	"attributesByType": {
+		"sliding-2x1-y-smoky-oak": {
+			"handbook": { "exclude": false }
+		}
+	},
     "actionLangCode": "game:blockhelp-door-toggle",
 	"creativeinventory": {
 		"general": ["*"],
@@ -65,7 +75,6 @@
 				"blendedOverlays": [{ "base": "slidingwindows:block/2x1-overlay", "blendMode": "Overlay" }] 
 		},
 		"putty": { "base": "game:block/glass/frame" }
-
     },
 	"drawtype": "json",
 	"renderPass": "OpaqueNoCull",

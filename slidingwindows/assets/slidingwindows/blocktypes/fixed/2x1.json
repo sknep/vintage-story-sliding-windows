@@ -24,8 +24,12 @@
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-fixed-desc" }],
-			"groupBy": ["fixed-2x1-*"]
+			"extraSections": [
+				{ "title": "slidingwindows:handbook-generic-recipe-title", "text": "slidingwindows:handbook-generic-recipe-text" },
+				{ "title": "", "text": "slidingwindows:handbook-fixed-desc" }
+			],
+			"groupBy": ["fixed-2x1-*"],
+			"exclude": true
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
@@ -34,6 +38,11 @@
 		"width": 1,
 		"height": 2,
         "handopenable": false
+	},
+	"attributesByType": {
+		"fixed-2x1-smoky-oak": {
+			"handbook": { "exclude": false }
+		}
 	},
 	"creativeinventory": {
 		"general": ["*"],
