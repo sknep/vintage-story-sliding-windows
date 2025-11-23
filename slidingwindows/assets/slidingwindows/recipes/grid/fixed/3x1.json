@@ -1,0 +1,50 @@
+[
+  {
+    "ingredientPattern": "PGP,PGP,PGS",
+    "width": 3,
+    "height": 3,
+    "RecipeGroup": 1,
+    "ingredients": {
+      "G": { "type": "block", "code": "game:glassslab-*-down-free", "name": "glass" },
+      "P": { "type": "item", "code": "game:plank-*", "name": "wood", "quantity": 3 },
+      "S": { "type": "item", "code": "game:ingot-leadsolder" }
+    },
+    "output": { "type": "block", "code": "slidingwindows:fixed-3x1-{glass}-{wood}", "quantity": 1 }
+  },
+  {
+    "ingredientPattern": "PGP,PGP,PGS",
+    "width": 3,
+    "height": 3,
+    "RecipeGroup": 1,
+    "ingredients": {
+      "G": { "type": "block", "code": "game:glassslab-*-down-free", "name": "glass" },
+      "P": { "type": "item", "code": "game:plank-*", "name": "wood", "quantity": 3 },
+      "S": { "type": "item", "code": "game:solderbar*", "quantity": 6 }
+    },
+    "output": { "type": "block", "code": "slidingwindows:fixed-3x1-{glass}-{wood}", "quantity": 1 }
+  },
+  {
+    "ingredientPattern": "PGP,PGP,PGS",
+    "width": 3,
+    "height": 3,
+    "RecipeGroup": 0,
+    "ingredients": {
+      "G": { "type": "block", "code": "game:glasspane-leaded-*-ew" },
+      "P": { "type": "item", "code": "game:plank-*", "name": "wood", "quantity": 3 },
+      "S": { "type": "item", "code": "game:ingot-leadsolder" }
+    },
+    "output": { "type": "block", "code": "slidingwindows:fixed-3x1-leaded-{wood}", "quantity": 1 }
+  },
+  {
+    "ingredientPattern": "PGP,PGP,PGS",
+    "width": 3,
+    "height": 3,
+    "RecipeGroup": 0,
+    "ingredients": {
+      "G": { "type": "block", "code": "game:glasspane-leaded-*-ew" },
+      "P": { "type": "item", "code": "game:plank-*", "name": "wood", "quantity": 3 },
+      "S": { "type": "item", "code": "game:solderbar*", "quantity": 6 }
+    },
+    "output": { "type": "block", "code": "slidingwindows:fixed-3x1-leaded-{wood}", "quantity": 1 }
+  }
+]
