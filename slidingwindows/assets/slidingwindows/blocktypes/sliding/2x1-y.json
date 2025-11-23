@@ -114,23 +114,5 @@
 		"origin": { "x": 0.8, "y": 0.9, "z": 0.8 },
 		"scale": 0.69
 	},
-	"fpHandTransform": { 
-		"translation": { "x": -0.77, "y": 0.18, "z": 0.72 },
-		"rotation": { "x": 98, "y": 42, "z": 0 },
-		"origin": { "x": 0.5, "y": 0.7, "z": 1 },
-		"scale": 1.11
-	},
-	"tpHandTransform": {
-		"translation": { "x": -0.74, "y": -1.22, "z": -1.7 },
-		"rotation": { "x": 8, "y": 11, "z": 59 },
-		"origin": { "x": 0.5, "y": 1, "z": 1 },
-		"scale": 0.71
-	},
-	"groundTransform": {
-		"translation": { "x": 0, "y": 0, "z": 0 },
-		"rotation": { "x": -90, "y": 0, "z": 0 },
-		"origin": { "x": 0.5, "y": 1, "z": 0.85 },
-		"scale": 3
-	},
 	"materialDensity": 200
 }

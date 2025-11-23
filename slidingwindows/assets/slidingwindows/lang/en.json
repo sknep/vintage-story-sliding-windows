@@ -114,8 +114,6 @@
   "slidingwindows:block-fixed-3x1-violet-*":  "Violet fixed 3x1 window",
   "slidingwindows:block-fixed-3x1-pink-*":    "Pink fixed 3x1 window",
   "slidingwindows:block-fixed-3x1-brown-*":   "Brown fixed 3x1 window",
-  "slidingwindows:block-fixed-3x1-leaded-*":  "Leaded fixed 3x1 window",
-
-  "slidingwindows:block-*":   "Missing label (Sliding Windows)"
+  "slidingwindows:block-fixed-3x1-leaded-*":  "Leaded fixed 3x1 window"
 
 }

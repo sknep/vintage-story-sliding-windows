@@ -105,24 +105,5 @@
 		"origin": { "x": 0.95, "y": 0.9, "z": 0.6 },
 		"scale": 0.69
 	},
-
-	"fpHandTransform": {
-		"translation": { "x": -0.77, "y": 0.18, "z": 0.72 },
-		"rotation": { "x": 98, "y": 42, "z": 0 },
-		"origin": { "x": 0.5, "y": 0.7, "z": 0.5 },
-		"scale": 0.3
-	},
-	"tpHandTransform": {
-		"translation": { "x": -0.94, "y": -1.42, "z": -1.4 },
-		"rotation": { "x": 13, "y": 11, "z": 59 },
-		"origin": { "x": 1, "y": 1, "z": 0.5 },
-		"scale": 0.5
-	},
-	"groundTransform": {
-		"translation": { "x": 0, "y": 0, "z": 0 },
-		"rotation": { "x": -90, "y": 0, "z": 0 },
-		"origin": { "x": 0.5, "y": 1, "z": 0.85 },
-		"scale": 3
-	},
 	"materialDensity": 200
 }
