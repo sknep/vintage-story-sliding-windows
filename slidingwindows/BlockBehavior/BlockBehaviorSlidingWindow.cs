@@ -46,9 +46,15 @@ namespace SlidingWindows.BlockBehaviors
         public bool airtight;
 
         ICoreAPI api;
-        public MeshData animatableOrigMesh;
-        public Shape animatableShape;
-        public string animatableDictKey;
+        public MeshData closedStaticMesh;
+        public MeshData closedAnimMesh;
+        public Shape closedShape;
+        public string closedDictKey;
+        public MeshData openedStaticMesh;
+        public MeshData openedAnimMesh;
+        public Shape openedShape;
+        public string openedDictKey;
+
 
         public BlockBehaviorSlidingWindow(Block block) : base(block)
         {
@@ -85,15 +91,15 @@ namespace SlidingWindows.BlockBehaviors
                 return;
             }
 
-            bool opened = !beh.Opened;
+            bool isOpen = !beh.Opened;
             if (activationArgs != null)
             {
-                opened = activationArgs.GetBool("opened", opened);
+                isOpen = activationArgs.GetBool("isOpen", isOpen);
             }
 
-            if (beh.Opened != opened)
+            if (beh.Opened != isOpen)
             {
-                beh.ToggleWindowSashState(null, opened);
+                beh.ToggleSashState(null, isOpen);
             }
         }
 

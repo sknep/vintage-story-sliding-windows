@@ -18,18 +18,26 @@
 		] },
 		{ "code": "wood", "states": ["aged"], "loadFromProperties": "game:block/wood" }
 	],
-	"shape": { "base": "slidingwindows:block/sliding/2x1-y" },
+	"shape": { "base": "slidingwindows:block/sliding/2x1-y-closed" },
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-y-desc" }]
+			"extraSections": [
+				{ "title": "slidingwindows:handbook-generic-recipe-title", "text": "slidingwindows:handbook-generic-recipe-text" },
+				{ "title": "slidingwindows:handbook-sliding-title", "text": "slidingwindows:handbook-sliding-y-desc" }
+			],
+			"exclude": true,
+			"groupBy": ["sliding-2x1-y-*"],
+			"groupName": "handbook-sliding-2x1-y"
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
-		"closingSpeed": 6,
+		"closingSpeed": 8,
 		"openingSpeed": 8,
 		"width": 1,
 		"height": 2,
+		"pairable": false,
+		"openedShape": "slidingwindows:shapes/block/sliding/2x1-y-open.json",
 		"openSound": "game:sounds/wearable/scale1",
 		"closeSound": "game:sounds/wearable/scale1",
 		"secondarySounds": {
@@ -48,6 +56,11 @@
 		]
 
 	},
+	"attributesByType": {
+		"sliding-2x1-y-smoky-oak": {
+			"handbook": { "exclude": false }
+		}
+	},
     "actionLangCode": "game:blockhelp-door-toggle",
 	"creativeinventory": {
 		"general": ["*"],
@@ -62,7 +75,6 @@
 				"blendedOverlays": [{ "base": "slidingwindows:block/2x1-overlay", "blendMode": "Overlay" }] 
 		},
 		"putty": { "base": "game:block/glass/frame" }
-
     },
 	"drawtype": "json",
 	"renderPass": "OpaqueNoCull",
@@ -101,24 +113,6 @@
 	"guiTransform": {
 		"origin": { "x": 0.8, "y": 0.9, "z": 0.8 },
 		"scale": 0.69
-	},
-	"fpHandTransform": { 
-		"translation": { "x": -0.77, "y": 0.18, "z": 0.72 },
-		"rotation": { "x": 98, "y": 42, "z": 0 },
-		"origin": { "x": 0.5, "y": 0.7, "z": 1 },
-		"scale": 1.11
-	},
-	"tpHandTransform": {
-		"translation": { "x": -0.74, "y": -1.22, "z": -1.7 },
-		"rotation": { "x": 8, "y": 11, "z": 59 },
-		"origin": { "x": 0.5, "y": 1, "z": 1 },
-		"scale": 0.71
-	},
-	"groundTransform": {
-		"translation": { "x": 0, "y": 0, "z": 0 },
-		"rotation": { "x": -90, "y": 0, "z": 0 },
-		"origin": { "x": 0.5, "y": 1, "z": 0.85 },
-		"scale": 3
 	},
 	"materialDensity": 200
 }

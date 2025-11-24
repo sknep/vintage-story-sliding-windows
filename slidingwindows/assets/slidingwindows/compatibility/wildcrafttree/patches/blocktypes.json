@@ -1,0 +1,22 @@
+[
+  { "file": "blocktypes/fixed/1x1.json", "op": "remove", "path": "/variantgroups/1/loadFromProperties" },
+  { "file": "blocktypes/fixed/1x1.json", "op": "add", "path": "/variantgroups/1/loadFromPropertiesCombine", "value": ["game:block/wood", "wildcrafttree:block/wood"] },
+
+  { "file": "blocktypes/fixed/2x1.json", "op": "remove", "path": "/variantgroups/1/loadFromProperties" },
+  { "file": "blocktypes/fixed/2x1.json", "op": "add", "path": "/variantgroups/1/loadFromPropertiesCombine", "value": ["game:block/wood", "wildcrafttree:block/wood"] },
+
+  { "file": "blocktypes/fixed/3x1.json", "op": "remove", "path": "/variantgroups/1/loadFromProperties" },
+  { "file": "blocktypes/fixed/3x1.json", "op": "add", "path": "/variantgroups/1/loadFromPropertiesCombine", "value": ["game:block/wood", "wildcrafttree:block/wood"] },
+
+  { "file": "blocktypes/sliding/2x1-y.json", "op": "remove", "path": "/variantgroups/1/loadFromProperties" },
+  { "file": "blocktypes/sliding/2x1-y.json", "op": "add", "path": "/variantgroups/1/loadFromPropertiesCombine", "value": ["game:block/wood", "wildcrafttree:block/wood"] },
+
+  { "file": "blocktypes/sliding/2x2-x.json", "op": "remove", "path": "/variantgroups/1/loadFromProperties" },
+  { "file": "blocktypes/sliding/2x2-x.json", "op": "add", "path": "/variantgroups/1/loadFromPropertiesCombine", "value": ["game:block/wood", "wildcrafttree:block/wood"] },
+
+  { "file": "blocktypes/sliding/3x2-x.json", "op": "remove", "path": "/variantgroups/1/loadFromProperties" },
+  { "file": "blocktypes/sliding/3x2-x.json", "op": "add", "path": "/variantgroups/1/loadFromPropertiesCombine", "value": ["game:block/wood", "wildcrafttree:block/wood"] },
+
+  { "file": "blocktypes/sliding/legacy-window.json", "op": "remove", "path": "/variantgroups/1/loadFromProperties" },
+  { "file": "blocktypes/sliding/legacy-window.json", "op": "add", "path": "/variantgroups/1/loadFromPropertiesCombine", "value": ["game:block/wood", "wildcrafttree:block/wood"] }
+]

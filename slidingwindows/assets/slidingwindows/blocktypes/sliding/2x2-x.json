@@ -9,7 +9,7 @@
 	], 
 	"entityBehaviors": [
 		{ "name": "SlidingWindowBE" }
-],
+	],
 	"variantgroups": [
         { "code": "glass", "states": [
 			"plain","smoky","quartz","vintage",
@@ -18,26 +18,35 @@
 		] },
 		{ "code": "wood", "states": ["aged"], "loadFromProperties": "game:block/wood" }
 	],
-	"shape": { "base": "slidingwindows:block/sliding/2x2-x" },
+	"shape": { "base": "slidingwindows:block/sliding/2x2-x-closed" },
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-x-desc" }]
+			"extraSections": [
+				{ "title": "slidingwindows:handbook-generic-recipe-title", "text": "slidingwindows:handbook-generic-recipe-text" },
+				{ "title": "slidingwindows:handbook-sliding-title", "text": "slidingwindows:handbook-sliding-x-desc" }
+			],
+			"groupBy": ["block-sliding-2x2-x-*"],
+			"groupName": "handbook-sliding-2x2-x",
+			"exclude": true
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
-		"closingSpeed": 6,
+		"closingSpeed": 8,
 		"openingSpeed": 8,
 		"width": 2,
 		"height": 2,
 		"pairable": true,
+		"openedShape": "slidingwindows:shapes/block/sliding/2x2-x-open.json",
 		"openSound": "game:sounds/wearable/scale1",
 		"closeSound": "game:sounds/wearable/scale1",
 		"secondarySounds": {
 			"open": "game:sounds/wearable/brigandine2",
 			"close": "game:sounds/player/seal"
 		}
-
+	},
+	"attributesByType": {
+		"sliding-2x2-x-smoky-oak": { "handbook": { "exclude": false } }
 	},
     "actionLangCode": "game:blockhelp-door-toggle",
 	"creativeinventory": {
@@ -95,25 +104,6 @@
 	"guiTransform": {
 		"origin": { "x": 0.95, "y": 0.9, "z": 0.6 },
 		"scale": 0.69
-	},
-
-	"fpHandTransform": {
-		"translation": { "x": -0.77, "y": 0.18, "z": 0.72 },
-		"rotation": { "x": 98, "y": 42, "z": 0 },
-		"origin": { "x": 0.5, "y": 0.7, "z": 0.5 },
-		"scale": 0.3
-	},
-	"tpHandTransform": {
-		"translation": { "x": -0.94, "y": -1.42, "z": -1.4 },
-		"rotation": { "x": 13, "y": 11, "z": 59 },
-		"origin": { "x": 1, "y": 1, "z": 0.5 },
-		"scale": 0.5
-	},
-	"groundTransform": {
-		"translation": { "x": 0, "y": 0, "z": 0 },
-		"rotation": { "x": -90, "y": 0, "z": 0 },
-		"origin": { "x": 0.5, "y": 1, "z": 0.85 },
-		"scale": 3
 	},
 	"materialDensity": 200
 }

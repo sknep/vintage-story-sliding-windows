@@ -1,0 +1,50 @@
+[
+  {
+    "ingredientPattern": "PSP,FF_,PSP",
+    "width": 3,
+    "height": 3,
+    "RecipeGroup": 1,
+    "ingredients": {
+      "F": { "type": "block", "code": "slidingwindows:fixed-3x1-*", "name": "materials" },
+      "P": { "type": "item", "code": "game:plank-*", "name": "wood", "quantity": 3 },
+      "S": { "type": "item", "code": "game:ingot-leadsolder", "quantity": 2 }
+    },
+    "output": { "type": "block", "code": "slidingwindows:sliding-3x2-x-{materials}", "quantity": 1 }
+  },
+  {
+    "ingredientPattern": "PSP,FF_,PSP",
+    "width": 3,
+    "height": 3,
+    "RecipeGroup": 1,
+    "ingredients": {
+      "F": { "type": "block", "code": "slidingwindows:fixed-3x1-*", "name": "materials" },
+      "P": { "type": "item", "code": "game:plank-*", "name": "wood", "quantity": 3 },
+      "S": { "type": "item", "code": "game:solderbar*", "quantity": 6 }
+    },
+    "output": { "type": "block", "code": "slidingwindows:sliding-3x2-x-{materials}", "quantity": 1 }
+  },
+  {
+    "ingredientPattern": "PSP,FF_,PSP",
+    "width": 3,
+    "height": 3,
+    "RecipeGroup": 1,
+    "ingredients": {
+      "F": { "type": "block", "code": "slidingwindows:fixed-3x1-leaded-*", "name": "materials" },
+      "P": { "type": "item", "code": "game:plank-*", "name": "wood", "quantity": 3 },
+      "S": { "type": "item", "code": "game:ingot-leadsolder", "quantity": 2 }
+    },
+    "output": { "type": "block", "code": "slidingwindows:sliding-3x2-x-leaded-{wood}", "quantity": 1 }
+  },
+  {
+    "ingredientPattern": "PSP,FF_,PSP",
+    "width": 3,
+    "height": 3,
+    "RecipeGroup": 1,
+    "ingredients": {
+      "F": { "type": "block", "code": "slidingwindows:fixed-3x1-leaded-*", "name": "materials" },
+      "P": { "type": "item", "code": "game:plank-*", "name": "wood", "quantity": 3 },
+      "S": { "type": "item", "code": "game:solderbar*", "quantity": 6 }
+    },
+    "output": { "type": "block", "code": "slidingwindows:sliding-3x2-x-leaded-{wood}", "quantity": 1 }
+  }
+]

@@ -1,5 +1,5 @@
 {
-    "code": "fixed-1x1-wc",
+    "code": "fixed-3x1",
 	"class": "BlockGeneric",
 	"entityClass": "Generic",
     "behaviors": [ 
@@ -14,27 +14,35 @@
 			"blue","green","red","yellow","violet",
 			"pink","brown", "leaded"
 		] },
-		{ "code": "wood", "states": ["aged"],"loadFromPropertiesCombine": [
-			"wildcrafttree:block/wood"
-		]}
+		{ "code": "wood", "states": ["aged"], "loadFromProperties": "game:block/wood" }
 	],
-    "shape": { "base": "slidingwindows:block/fixed/1x1" },
+    "shape": { "base": "slidingwindows:block/fixed/3x1" },
     "collisionboxes": [
-        { "x1": 0.0, "y1": 0.0, "z1": 0.4, "x2": 1.0, "y2": 1.0, "z2": 0.6 }
+        { "x1": 0.0, "y1": 0.0, "z1": 0.4, "x2": 1.0, "y2": 3.0, "z2": 0.6 }
     ],
 
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-fixed-desc" }]
+			"extraSections": [
+				{ "title": "slidingwindows:handbook-generic-recipe-title", "text": "slidingwindows:handbook-generic-recipe-text" },
+				{ "title": "", "text": "slidingwindows:handbook-fixed-desc" }
+			],
+			"groupBy": ["fixed-3x1-*"],
+			"exclude": true
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
         "closingSpeed": 0,
 		"openingSpeed": 0,
 		"width": 1,
-		"height": 1,
+		"height": 3,
         "handopenable": false
+	},
+	"attributesByType": {
+		"fixed-3x1-smoky-oak": {
+			"handbook": { "exclude": false }
+		}
 	},
 	"creativeinventory": {
 		"general": ["*"],
@@ -70,6 +78,10 @@
 		"place": "game:block/planks",
 		"hit": "game:block/glass",
 		"break": "game:block/glass"
+	},
+	"guiTransform": {
+		"origin": { "x": 0.5, "y": 1.3, "z": 0.5 },
+		"scale": 0.55
 	},
 	"materialDensity": 200
 }

@@ -1,5 +1,5 @@
 {
-    "code": "sliding-2x1-y-wc",
+    "code": "sliding-3x2-x",
 	"class": "BlockGeneric",
 	"entityClass": "Generic",
 	"behaviors": [ 
@@ -9,46 +9,45 @@
 	], 
 	"entityBehaviors": [
 		{ "name": "SlidingWindowBE" }
-	],
+],
 	"variantgroups": [
         { "code": "glass", "states": [
 			"plain","smoky","quartz","vintage",
 			"blue","green","red","yellow","violet",
 			"pink","brown", "leaded"
 		] },
-		{ "code": "wood", "states": ["aged"], "loadFromPropertiesCombine": [
-                "wildcrafttree:block/wood"
-    		]}
+		{ "code": "wood", "states": ["aged"], "loadFromProperties": "game:block/wood" }
 	],
-	"shape": { "base": "slidingwindows:block/sliding/2x1-y" },
+	"shape": { "base": "slidingwindows:block/sliding/3x2-x-closed" },
 	"attributes": {
 		"reinforcable": true,
 		"handbook": {
-			"extraSections": [{ "title": "", "text": "slidingwindows:handbook-sliding-y-desc" }]
+			"extraSections": [
+				{ "title": "slidingwindows:handbook-generic-recipe-title", "text": "slidingwindows:handbook-generic-recipe-text" },
+				{ "title": "slidingwindows:handbook-sliding-title", "text": "slidingwindows:handbook-sliding-x-desc" }
+			],
+			"exclude": true,
+			"groupBy": ["sliding-3x2-x-*"],
+			"groupName": "handbook-sliding-3x2-x"
 		},
         "airtight": { "*": true },
 		"glass": "{glass}",
-		"closingSpeed": 6,
+		"closingSpeed": 8,
 		"openingSpeed": 8,
-		"width": 1,
-		"height": 2,
+		"width": 2,
+		"height": 3,
+		"pairable": true,
+		"openedShape": "slidingwindows:shapes/block/sliding/3x2-x-open.json",
 		"openSound": "game:sounds/wearable/scale1",
 		"closeSound": "game:sounds/wearable/scale1",
 		"secondarySounds": {
 			"open": "game:sounds/wearable/brigandine2",
 			"close": "game:sounds/player/seal"
-		},
-		"glassRegions": [
-			{ 
-				"x1": 0.09375, "y1": 1.0, "z1": 0.5831, 
-				"x2": 0.90625, "y2": 1.8125, "z2": 0.6038
-			},
-			{ 
-				"x1": 0.09375, "y1": 0.1875, "z1": 0.3925, 
-				"x2": 0.90625, "y2": 1.0, "z2": 0.4131
-			}
-		]
+		}
 
+	},
+	"attributesByType": {
+		"sliding-3x2-x-smoky-oak": { "handbook": { "exclude": false } }
 	},
     "actionLangCode": "game:blockhelp-door-toggle",
 	"creativeinventory": {
@@ -59,6 +58,9 @@
         "glass": {
 			 "base": "game:block/glass/{glass}"
 		},
+		"black":  { "base": "game:block/black" },
+		"white":  { "base": "game:block/linen" },
+		"transparent":  { "base": "game:block/transparent" },
 		"wood":  { 
 			"base": "game:block/wood/debarked/{wood}",
 				"blendedOverlays": [{ "base": "slidingwindows:block/2x1-overlay", "blendMode": "Overlay" }] 
@@ -83,16 +85,16 @@
 	},
 	"collisionboxes": [
 		{ 
-			"x1": 0.0, "y1": 0.9125, "z1": 0.5, 
-			"x2": 1.0, "y2": 2, "z2": 0.69
+			"x1": 0.0, "y1": 0, "z1": 0.5, 
+			"x2": 1.09375, "y2": 3, "z2": 0.69
 		},
 		{ 
-			"x1": 0.0, "y1": 0.0, "z1": 0.31, 
-			"x2": 1.0, "y2": 1.0875, "z2": 0.5 
+			"x1": 0.90625, "y1": 0.0, "z1": 0.31, 
+			"x2": 2.0, "y2": 3, "z2": 0.5 
 		},
 		{ 
-			"x1": 0.0, "y1": 0.75, "z1": 0.31, 
-			"x2": 1.0, "y2": 1.84, "z2": 0.5 
+			"x1": 0.15326, "y1": 0.0, "z1": 0.31, 
+			"x2": 1.24701, "y2": 3, "z2": 0.5 
 		}
 	],
 	"sounds": {
@@ -101,26 +103,8 @@
 		"break": "game:block/glass"
 	},
 	"guiTransform": {
-		"origin": { "x": 0.8, "y": 0.9, "z": 0.8 },
-		"scale": 0.69
-	},
-	"fpHandTransform": { 
-		"translation": { "x": -0.77, "y": 0.18, "z": 0.72 },
-		"rotation": { "x": 98, "y": 42, "z": 0 },
-		"origin": { "x": 0.5, "y": 0.7, "z": 1 },
-		"scale": 1.11
-	},
-	"tpHandTransform": {
-		"translation": { "x": -0.74, "y": -1.22, "z": -1.7 },
-		"rotation": { "x": 8, "y": 11, "z": 59 },
-		"origin": { "x": 0.5, "y": 1, "z": 1 },
-		"scale": 0.71
-	},
-	"groundTransform": {
-		"translation": { "x": 0, "y": 0, "z": 0 },
-		"rotation": { "x": -90, "y": 0, "z": 0 },
-		"origin": { "x": 0.5, "y": 1, "z": 0.85 },
-		"scale": 3
+		"origin": { "x": 0.95, "y": 1.25, "z": 0.6 },
+		"scale": 0.45
 	},
 	"materialDensity": 200
 }

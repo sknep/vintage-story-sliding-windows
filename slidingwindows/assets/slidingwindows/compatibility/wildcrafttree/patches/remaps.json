@@ -1,0 +1,14 @@
+[
+  {
+    "file": "config/remaps.json",
+    "op": "add",
+    "path": "/slidingwindows:v1.3.0-wc-cleanup",
+    "value": [
+      "/bir remapq slidingwindows:fixed-1x1-wc-* slidingwindows:fixed-1x1-* force",
+      "/bir remapq slidingwindows:fixed-2x1-wc-* slidingwindows:fixed-2x1-* force",
+      "/bir remapq slidingwindows:sliding-2x1-y-wc-* slidingwindows:sliding-2x1-y-* force",
+      "/bir remapq slidingwindows:sliding-2x2-x-wc-* slidingwindows:sliding-2x2-x-* force",
+      "/bir remapq slidingwindows:sliding-window-wc-* slidingwindows:sliding-window-* force"
+    ]
+  }
+]
