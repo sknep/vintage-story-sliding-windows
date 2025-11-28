@@ -13,9 +13,23 @@ namespace SlidingWindows
             api.RegisterBlockBehaviorClass(
                 "SlidingWindow", typeof(BlockBehaviorSlidingWindow)
             );
+            api.RegisterBlockBehaviorClass(
+                "GlassDoor", typeof(BlockBehaviorGlassDoor)
+            );
+            api.RegisterBlockBehaviorClass(
+                "GlassTrapdoor", typeof(BlockBehaviorGlassTrapdoor)
+            );
 
             api.RegisterBlockEntityBehaviorClass(
                 "SlidingWindowBE", typeof(BEBehaviorSlidingWindow)
+            );
+
+            api.RegisterBlockEntityBehaviorClass(
+                "GlassDoorBE", typeof(BEBehaviorGlassDoor)
+            );
+
+            api.RegisterBlockEntityBehaviorClass(
+                "GlassTrapdoorBE", typeof(BEBehaviorGlassTrapdoor)
             );
         }
     }

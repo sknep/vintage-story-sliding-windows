@@ -1,0 +1,58 @@
+[
+  {
+    "file": "glasstrapdoor:blocktypes/glass/trapdoor.json",
+    "op": "replace",
+    "path": "/entityBehaviors/0/name",
+    "value": "GlassTrapdoorBE",
+    "when": { "modid": "glasstrapdoor" }
+  },
+  {
+    "file": "glasstrapdoor:blocktypes/glass/trapdoor.json",
+    "op": "replace",
+    "path": "/behaviors/1/name",
+    "value": "GlassTrapdoor",
+    "when": { "modid": "glasstrapdoor" }
+  },
+  {
+    "file": "glasstrapdoor:blocktypes/glass/trapdoor.json",
+    "op": "add",
+    "path": "/attributes/openedShape",
+    "value": "slidingwindows:shapes/compatibility/glasstrapdoor/block/glass/trapdoor-open.json",
+    "when": { "modid": "glasstrapdoor" }
+  },
+  {
+    "file": "glasstrapdoor:blocktypes/glass/trapdoor.json",
+    "op": "replace",
+    "path": "/shape/base",
+    "value": "slidingwindows:compatibility/glasstrapdoor/block/glass/trapdoor-closed",
+    "when": { "modid": "glasstrapdoor" }
+  },
+  {
+    "file": "glasstrapdoor:blocktypes/glass/trapdoor.json",
+    "op": "add",
+    "path": "/attributes/glass",
+    "value": true,
+    "when": { "modid": "glasstrapdoor" }
+  },  
+  {
+    "file": "glasstrapdoor:blocktypes/glass/trapdoor.json",
+    "op": "add",
+    "path": "/attributes/pairable",
+    "value": false,
+    "when": { "modid": "glasstrapdoor" }
+  },
+  {
+    "file": "glasstrapdoor:blocktypes/glass/trapdoor.json",
+    "op": "add",
+    "path": "/attributes/openingAnimationCode",
+    "value": "opening",
+    "when": { "modid": "glasstrapdoor" }
+  },  
+  {
+    "file": "glasstrapdoor:blocktypes/glass/trapdoor.json",
+    "op": "add",
+    "path": "/attributes/closingAnimationCode",
+    "value": "closing",
+    "when": { "modid": "glasstrapdoor" }
+  }
+]
