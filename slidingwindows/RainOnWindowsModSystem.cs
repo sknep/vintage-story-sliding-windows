@@ -286,7 +286,7 @@ namespace SlidingWindows
         {
             // Volume scales with precipitation intensity (0–1 from vanilla system) and is affected
             // by how recently player moved into or out of the rain
-            return 0.3f * intensity * coverStrength * entryBias;
+            return 1f * intensity * coverStrength * entryBias;
         }
 
         float HowHardIsItRaining(
@@ -345,7 +345,7 @@ namespace SlidingWindows
                 new AssetLocation(soundKey),
                 sx, sy, sz,
                 null,
-                EnumSoundType.Ambient,
+                EnumSoundType.Weather,
                 pitch,
                 24f,
                 volume
