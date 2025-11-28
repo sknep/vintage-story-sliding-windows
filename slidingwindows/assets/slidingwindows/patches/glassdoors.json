@@ -1,0 +1,58 @@
+[
+  {
+    "file": "glassdoors:blocktypes/glass-door.json",
+    "op": "replace",
+    "path": "/entityBehaviors/0/name",
+    "value": "GlassDoorBE",
+    "when": { "modid": "glassdoors" }
+  },
+  {
+    "file": "glassdoors:blocktypes/glass-door.json",
+    "op": "replace",
+    "path": "/behaviors/1/name",
+    "value": "GlassDoor",
+    "when": { "modid": "glassdoors" }
+  },
+  {
+    "file": "glassdoors:blocktypes/glass-door.json",
+    "op": "add",
+    "path": "/attributes/openedShape",
+    "value": "slidingwindows:shapes/compatibility/glassdoors/block/glass/door-open.json",
+    "when": { "modid": "glassdoors" }
+  },
+  {
+    "file": "glassdoors:blocktypes/glass-door.json",
+    "op": "replace",
+    "path": "/shape/base",
+    "value": "slidingwindows:compatibility/glassdoors/block/glass/door-closed",
+    "when": { "modid": "glassdoors" }
+  },
+  {
+    "file": "glassdoors:blocktypes/glass-door.json",
+    "op": "add",
+    "path": "/attributes/glass",
+    "value": true,
+    "when": { "modid": "glassdoors" }
+  },
+  {
+    "file": "glassdoors:blocktypes/glass-door.json",
+    "op": "add",
+    "path": "/attributes/pairable",
+    "value": true,
+    "when": { "modid": "glassdoors" }
+  },
+  {
+    "file": "glassdoors:blocktypes/glass-door.json",
+    "op": "add",
+    "path": "/attributes/openingAnimationCode",
+    "value": "opening",
+    "when": { "modid": "glassdoors" }
+  },
+  {
+    "file": "glassdoors:blocktypes/glass-door.json",
+    "op": "add",
+    "path": "/attributes/closingAnimationCode",
+    "value": "closing",
+    "when": { "modid": "glassdoors" }
+  }
+]
